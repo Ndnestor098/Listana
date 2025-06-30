@@ -1,19 +1,19 @@
-import { usePage } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { Home, List, Package, Settings, User } from 'lucide-react';
 
-export default function SideBar({ onViewChange }) {
+export default function SideBar() {
     const menuItems = [
         {
             id: 'dashboard',
             label: 'Dashboard',
             icon: Home,
-            path: '/dashboard',
+            path: route('dashboard'),
         },
         {
-            id: 'list',
+            id: 'my-lists.index',
             label: 'My lists',
             icon: List,
-            path: '/list',
+            path: route('my-lists.index'),
         },
         // {
         //     id: 'activa',
@@ -21,21 +21,20 @@ export default function SideBar({ onViewChange }) {
         //     icon: ShoppingCart,
         //     path: '/activa',
         // },
-        {
-            id: 'history',
-            label: 'History',
-            icon: Package,
-            path: '/history',
-        },
-        {
-            id: 'config',
-            label: 'Configuration',
-            icon: Settings,
-            path: '/config',
-        },
+        // {
+        //     id: 'history',
+        //     label: 'History',
+        //     icon: Package,
+        //     path: '/history',
+        // },
+        // {
+        //     id: 'config',
+        //     label: 'Configuration',
+        //     icon: Settings,
+        //     path: '/config',
+        // },
     ];
     const user = usePage().props.auth.user;
-    const activeView = usePage().url;
 
     return (
         <div className="hidden border-r border-gray-800 bg-gray-900 lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
@@ -48,13 +47,12 @@ export default function SideBar({ onViewChange }) {
             <nav className="flex-1 space-y-2 px-4 py-6">
                 {menuItems.map((item) => {
                     const Icon = item.icon;
-                    const isActive =
-                        activeView === item.path || activeView === item.id;
+                    const isActive = route().current(item.id);
 
                     return (
-                        <button
+                        <Link
+                            href={route(item.id)}
                             key={item.id}
-                            onClick={() => onViewChange(item.id)}
                             className={`flex w-full items-center rounded-lg px-4 py-3 text-sm font-medium transition-all duration-200 ${
                                 isActive
                                     ? 'bg-emerald-500 text-white shadow-lg'
@@ -65,7 +63,7 @@ export default function SideBar({ onViewChange }) {
                                 className={`mr-3 h-5 w-5 ${isActive ? 'text-white' : 'text-gray-400'}`}
                             />
                             {item.label}
-                        </button>
+                        </Link>
                     );
                 })}
             </nav>
