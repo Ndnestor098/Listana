@@ -26,7 +26,13 @@ class ShoppingListController extends Controller
      */
     public function show($uuid)
     {
-        return $uuid;
+        $list = ShoppingList::with('products')
+            ->where('uuid', $uuid)
+            ->firstOrFail();
+
+        return Inertia::render('List', [
+            'list' => $list,
+        ]);
     }
 
     /**
