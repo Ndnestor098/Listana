@@ -18,6 +18,10 @@ class ShoppingListsFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'uuid' => fake()->uuid(),
+            'status' => fake()->randomElement(['active', 'completed', 'archived']),
+            'category' => fake()->word(),
+            'user_id' => '1',
         ];
     }
 }
