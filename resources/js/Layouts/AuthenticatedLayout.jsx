@@ -1,3 +1,4 @@
+import BottomNavigation from '@/Components/BottomNavigation';
 import SideBar from '@/Components/SideBar';
 
 export default function AuthenticatedLayout({ children }) {
@@ -12,7 +13,7 @@ export default function AuthenticatedLayout({ children }) {
             </div>
 
             {/* Mobile Bottom Navigation */}
-            {/* <BottomNavigation activeView={activeView} onViewChange={setActiveView} /> */}
+            <BottomNavigation />
         </div>
     );
 }

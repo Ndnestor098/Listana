@@ -13,6 +13,16 @@ return new class extends Migration
     {
         Schema::create('shopping_lists', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
+            $table->string('name')->unique();
+            $table->enum('status', ['active', 'completed', 'archived'])->default('active');
+            $table->string('category')->nullable();
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->json('shared_user_ids')->nullable();
+            
             $table->timestamps();
         });
     }
