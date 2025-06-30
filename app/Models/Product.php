@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Products extends Model
+class Product extends Model
 {
+    use HasFactory;
+        
     protected $fillable = [
         'uuid',
         'name',
@@ -21,6 +24,6 @@ class Products extends Model
      */
     public function shoppingList()
     {
-        return $this->belongsTo(ShoppingLists::class);
+        return $this->belongsTo(ShoppingList::class);
     }
 }

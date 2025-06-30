@@ -1,8 +1,8 @@
 <?php
 
+use App\Http\Controllers\ShoppingListController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('MyLists');
-})->name('index');
+Route::get('/', [ShoppingListController::class, 'index'])->name('index');
+
+Route::get('/s/{uuid}', [ShoppingListController::class, 'show'])->name('show');

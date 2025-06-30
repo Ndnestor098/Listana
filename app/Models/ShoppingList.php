@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ShoppingLists extends Model
+class ShoppingList extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'uuid',
         'name',
@@ -26,7 +29,7 @@ class ShoppingLists extends Model
      */
     public function products()
     {
-        return $this->hasMany(Products::class);
+        return $this->hasMany(Product::class);
     }
 
 }

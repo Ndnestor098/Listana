@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('category')->nullable();
             $table->decimal('initial_price', 10, 2)->default(0.00);
             $table->decimal('final_price', 10, 2)->default(0.00);
+            $table->integer('completed_products')->default(0);
+            $table->integer('total_products')->default(0);
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
