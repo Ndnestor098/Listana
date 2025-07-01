@@ -1,8 +1,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { List, Package, Plus, ShoppingCart, TrendingUp } from 'lucide-react';
 
-export default function Dashboard() {
+export default function Dashboard({ lists }) {
     const stats = [
         {
             label: 'Listas Activas',
@@ -27,27 +27,6 @@ export default function Dashboard() {
             value: '$150',
             icon: TrendingUp,
             color: 'text-green-500',
-        },
-    ];
-
-    const recentLists = [
-        {
-            name: 'Supermercado Semanal',
-            items: 15,
-            completed: 8,
-            date: '2024-01-15',
-        },
-        {
-            name: 'Farmacia',
-            items: 3,
-            completed: 3,
-            date: '2024-01-14',
-        },
-        {
-            name: 'Verdulería',
-            items: 8,
-            completed: 5,
-            date: '2024-01-13',
         },
     ];
 
@@ -106,8 +85,9 @@ export default function Dashboard() {
                     </div>
                     <div className="p-6">
                         <div className="space-y-4">
-                            {recentLists.map((list, index) => (
-                                <div
+                            {lists.map((list, index) => (
+                                <Link
+                                    href={route('my-lists.show', list.uuid)}
                                     key={index}
                                     className="flex cursor-pointer items-center justify-between rounded-lg bg-gray-50 p-4 transition-colors hover:bg-gray-100"
                                 >
@@ -116,7 +96,8 @@ export default function Dashboard() {
                                             {list.name}
                                         </h3>
                                         <p className="text-sm text-gray-600">
-                                            {list.completed} de {list.items}
+                                            {list.completed_products} de
+                                            {' ' + list.total_products + ' '}
                                             productos completados
                                         </p>
                                     </div>
@@ -124,19 +105,19 @@ export default function Dashboard() {
                                     <div className="text-right">
                                         <p className="text-sm text-gray-500">
                                             {new Date(
-                                                list.date,
+                                                list.created_at,
                                             ).toLocaleDateString()}
                                         </p>
                                         <div className="mt-1 h-2 w-20 rounded-full bg-gray-200">
                                             <div
                                                 className="h-2 rounded-full bg-emerald-500 transition-all duration-300"
                                                 style={{
-                                                    width: `${(list.completed / list.items) * 100}%`,
+                                                    width: `${(list.completed_products / list.total_products) * 100}%`,
                                                 }}
                                             ></div>
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </div>
