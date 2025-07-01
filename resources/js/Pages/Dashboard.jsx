@@ -1,6 +1,8 @@
+import NewListModal from '@/Components/NewListModal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import { List, Package, Plus, ShoppingCart, TrendingUp } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Dashboard({ lists }) {
     const stats = [
@@ -30,6 +32,8 @@ export default function Dashboard({ lists }) {
         },
     ];
 
+    const [showNuevaListaModal, setShowNuevaListaModal] = useState(false);
+
     return (
         <AuthenticatedLayout>
             <Head title="Dashboard" />
@@ -45,7 +49,12 @@ export default function Dashboard({ lists }) {
                             Resumen de tu actividad de compras
                         </p>
                     </div>
-                    <button className="flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors hover:bg-emerald-600">
+                    <button
+                        onClick={() => {
+                            setShowNuevaListaModal(true);
+                        }}
+                        className="flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors hover:bg-emerald-600"
+                    >
                         <Plus className="h-4 w-4" />
                         Nueva Lista
                     </button>
@@ -123,6 +132,12 @@ export default function Dashboard({ lists }) {
                     </div>
                 </div>
             </div>
+
+            {/* New List Modal */}
+            <NewListModal
+                isOpen={showNuevaListaModal}
+                onClose={() => setShowNuevaListaModal(false)}
+            />
         </AuthenticatedLayout>
     );
 }

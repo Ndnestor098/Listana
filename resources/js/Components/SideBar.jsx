@@ -27,12 +27,12 @@ export default function SideBar() {
         //     icon: Package,
         //     path: '/history',
         // },
-        // {
-        //     id: 'config',
-        //     label: 'Configuration',
-        //     icon: Settings,
-        //     path: '/config',
-        // },
+        {
+            id: 'config.index',
+            label: 'Configuration',
+            icon: Settings,
+            path: '/config',
+        },
     ];
     const user = usePage().props.auth.user;
 

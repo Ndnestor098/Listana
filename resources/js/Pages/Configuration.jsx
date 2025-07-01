@@ -1,6 +1,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { User, Bell, Shield, Palette, LogOut, ChevronRight } from 'lucide-react';
+import {
+    Bell,
+    ChevronRight,
+    LogOut,
+    Palette,
+    Shield,
+    User,
+} from 'lucide-react';
 
 export default function Configuracion() {
     const configSections = [

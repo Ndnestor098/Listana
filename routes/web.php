@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Models\ShoppingList;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,7 +17,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    $lists = ShoppingList::where('user_id', auth()->id())
+    $lists = ShoppingList::where('user_id', Auth::id())
         ->orderBy('created_at', 'desc')
         ->limit(5)
         ->get();
