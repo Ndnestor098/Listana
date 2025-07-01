@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { Home, List, Package, Settings, User } from 'lucide-react';
+import { Home, List, Settings, User } from 'lucide-react';
 
 export default function SideBar() {
     const menuItems = [
