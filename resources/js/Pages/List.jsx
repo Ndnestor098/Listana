@@ -249,6 +249,7 @@ export default function List({ list }) {
             </div>
 
             <AddingProductModal
+                id={list.id}
                 isOpen={showAgregarModal}
                 onClose={() => setShowAgregarModal(false)}
             />

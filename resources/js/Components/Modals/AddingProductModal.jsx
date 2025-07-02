@@ -1,27 +1,35 @@
 import { useForm } from '@inertiajs/react';
 import { X } from 'lucide-react';
 
-export default function AgregarProductoModal({ isOpen, onClose }) {
-    const { data, setData, post } = useForm({
-        nombre: '',
-        categoria: '',
-        cantidad: 1,
-        nota: '',
+export default function AgregarProductoModal({ isOpen, onClose, id }) {
+    const { data, setData, post, errors } = useForm({
+        name: '',
+        category: '',
+        quantity: 1,
+        notes: '',
+        list_id: id,
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        
-    };
-
-    const handleChange = (e) => {
-        const { name, value, type } = e.target;
-        setData({
-            ...data,
-            [name]: type === 'number' ? parseInt(value) || 0 : value,
+        post(route('products.store'), {
+            onSuccess: () => {
+                onClose();
+            },
         });
     };
+
+    function handleChange(e) {
+        const key = e.target.name;
+        const value = e.target.value;
+        console.log(key, value);
+
+        setData((values) => ({
+            ...values,
+            [key]: value,
+        }));
+    }
 
     if (!isOpen) return null;
 
@@ -49,25 +57,29 @@ export default function AgregarProductoModal({ isOpen, onClose }) {
                         </label>
                         <input
                             type="text"
-                            name="nombre"
-                            value={data.nombre}
+                            name="name"
+                            value={data.name}
                             onChange={handleChange}
                             className="w-full rounded-lg border border-gray-300 p-3 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
                             placeholder="Ej: Leche entera 1L"
                             required
                         />
+                        {errors.name && (
+                            <span className="block text-center text-xs text-red-500">
+                                {errors.name}
+                            </span>
+                        )}
                     </div>
 
                     <div>
                         <label className="mb-2 block text-sm font-medium text-gray-700">
-                            Categoría
+                            Categoría (opcional)
                         </label>
                         <select
-                            name="categoria"
-                            value={data.categoria}
+                            name="category"
+                            value={data.category}
                             onChange={handleChange}
                             className="w-full rounded-lg border border-gray-300 p-3 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
-                            required
                         >
                             <option value="">Seleccionar categoría</option>
                             <option value="Lácteos">Lácteos</option>
@@ -83,6 +95,11 @@ export default function AgregarProductoModal({ isOpen, onClose }) {
                             <option value="Higiene">Higiene</option>
                             <option value="Otros">Otros</option>
                         </select>
+                        {errors.category && (
+                            <span className="block text-center text-xs text-red-500">
+                                {errors.category}
+                            </span>
+                        )}
                     </div>
 
                     <div>
@@ -91,13 +108,18 @@ export default function AgregarProductoModal({ isOpen, onClose }) {
                         </label>
                         <input
                             type="number"
-                            name="cantidad"
-                            value={data.cantidad}
+                            name="quantity"
+                            value={data.quantity}
                             onChange={handleChange}
                             min="1"
                             className="w-full rounded-lg border border-gray-300 p-3 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
                             required
                         />
+                        {errors.quantity && (
+                            <span className="block text-center text-xs text-red-500">
+                                {errors.category}
+                            </span>
+                        )}
                     </div>
 
                     <div>
@@ -105,13 +127,18 @@ export default function AgregarProductoModal({ isOpen, onClose }) {
                             Nota (opcional)
                         </label>
                         <textarea
-                            name="nota"
-                            value={data.nota}
+                            name="notes"
+                            value={data.notes}
                             onChange={handleChange}
                             rows={3}
                             className="w-full rounded-lg border border-gray-300 p-3 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
                             placeholder="Marca específica, tamaño, etc."
                         />
+                        {errors.notes && (
+                            <span className="block text-center text-xs text-red-500">
+                                {errors.notes}
+                            </span>
+                        )}
                     </div>
 
                     <div className="flex gap-3 pt-4">

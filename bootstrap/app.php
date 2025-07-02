@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->name('my-lists.')
                 ->middleware(['web', 'auth', 'verified'])
                 ->group(base_path('routes/my-lists.php'));
+            Route::prefix('products')
+                ->name('products.')
+                ->middleware(['web', 'auth', 'verified'])
+                ->group(base_path('routes/products.php'));
             Route::prefix('config')
                 ->name('config.')
                 ->middleware(['web', 'auth', 'verified'])
