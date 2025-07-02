@@ -120,9 +120,15 @@ export default function Dashboard({ lists }) {
                                         <div className="mt-1 h-2 w-20 rounded-full bg-gray-200">
                                             <div
                                                 className="h-2 rounded-full bg-emerald-500 transition-all duration-300"
-                                                style={{
-                                                    width: `${(list.completed_products / list.total_products) * 100}%`,
-                                                }}
+                                                style={
+                                                    list.total_products === 0 &&
+                                                    list.completed_products ===
+                                                        0
+                                                        ? { width: '0%' }
+                                                        : {
+                                                              width: `${(list.completed_products / list.total_products) * 100}%`,
+                                                          }
+                                                }
                                             ></div>
                                         </div>
                                     </div>

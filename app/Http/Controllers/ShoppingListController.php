@@ -17,6 +17,7 @@ class ShoppingListController extends Controller
     {
         $lists = ShoppingList::with('products')
             ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return Inertia::render('MyLists', compact('lists'));
