@@ -50,9 +50,12 @@ class ProductController extends Controller
 
         $list = ShoppingList::find($request->list_id);
 
-        return to_route('my-lists.show', [
-            'uuid' => $list->uuid
+        $list->update([
+            'total_products' => $list->products()->count(),
+            'total_price' => $list->products()->sum('unit_price'),
         ]);
+
+        return response()->noContent();
     }
 
     /**

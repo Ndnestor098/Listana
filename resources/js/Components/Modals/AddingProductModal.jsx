@@ -2,7 +2,7 @@ import { useForm } from '@inertiajs/react';
 import { X } from 'lucide-react';
 
 export default function AgregarProductoModal({ isOpen, onClose, id }) {
-    const { data, setData, post, errors } = useForm({
+    const { data, setData, errors } = useForm({
         name: '',
         category: '',
         quantity: 1,
@@ -10,14 +10,18 @@ export default function AgregarProductoModal({ isOpen, onClose, id }) {
         list_id: id,
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        post(route('products.store'), {
-            onSuccess: () => {
-                onClose();
-            },
-        });
+        try {
+            await axios.post(route('products.store'), data);
+
+            window.location.reload(); // Recargar la página para ver el nuevo producto
+
+            // Si quieres redirigir con Inertia
+        } catch (error) {
+            console.error('Error al agregar el producto:', error);
+        }
     };
 
     function handleChange(e) {
@@ -32,8 +36,6 @@ export default function AgregarProductoModal({ isOpen, onClose, id }) {
     }
 
     if (!isOpen) return null;
-
-    console.log('Datos del formulario:', data);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
