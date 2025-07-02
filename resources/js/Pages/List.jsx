@@ -1,3 +1,4 @@
+import AddingProductModal from '@/Components/Modals/AddingProductModal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import { Check, Plus, Search, ShoppingCart } from 'lucide-react';
@@ -5,6 +6,7 @@ import { useState } from 'react';
 
 export default function List({ list }) {
     const [productos, setProductos] = useState(list.products);
+    const [showAgregarModal, setShowAgregarModal] = useState(false);
 
     const toggleProducto = (id) => {
         setProductos(
@@ -57,7 +59,10 @@ export default function List({ list }) {
                             completados
                         </p>
                     </div>
-                    <button className="flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors hover:bg-emerald-600">
+                    <button
+                        onClick={() => setShowAgregarModal(true)}
+                        className="flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors hover:bg-emerald-600"
+                    >
                         <Plus className="h-4 w-4" />
                         Agregar
                     </button>
@@ -242,6 +247,11 @@ export default function List({ list }) {
                     <ShoppingCart className="h-6 w-6" />
                 </button>
             </div>
+
+            <AddingProductModal
+                isOpen={showAgregarModal}
+                onClose={() => setShowAgregarModal(false)}
+            />
         </AuthenticatedLayout>
     );
 }
