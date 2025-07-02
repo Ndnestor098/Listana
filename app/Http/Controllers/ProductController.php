@@ -63,7 +63,25 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        $request->validate([
+            'quantity' => 'nullable|integer|min:1',
+            'unit_price' => 'nullable|numeric|min:0',
+        ]);
+
+        if ($request->has('unit_price')) {
+            $product->update([
+                'unit_price' => $request->unit_price,
+            ]);
+        }
         
+        if ($request->has('quantity')) {
+            $product->update([
+                'quantity' => $request->quantity,
+            ]);
+        }
+        
+
+        return response()->noContent();
     }
 
     /**

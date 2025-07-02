@@ -1,8 +1,10 @@
 import AddingProductModal from '@/Components/Modals/AddingProductModal';
 import FilterTextModal from '@/Components/Modals/FilterTextModal';
+import PurchaseProgressBar from '@/Components/Modals/PurchaseProgressBar';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
-import { Check, Plus, Search, ShoppingCart } from 'lucide-react';
+import axios from 'axios';
+import { Check, Plus, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 
 export default function List({ list }) {
@@ -22,15 +24,20 @@ export default function List({ list }) {
         );
     };
 
+    const handleChangeCount = async (id, value) => {
+        await axios.post(route('products.update', id), {
+            quantity: value,
+        });
+    };
+
+    const handleChangePrice = async (id, value) => {
+        await axios.post(route('products.update', id), {
+            unit_price: value,
+        });
+    };
+
     const completados = productos.filter((p) => p.status === 'bought').length;
     const total = productos.length;
-    const totalPrecio = productos.reduce(
-        (sum, p) => sum + p.quantity * p.unit_price,
-        0,
-    );
-    const completadoPrecio = productos
-        .filter((p) => p.status === 'bought')
-        .reduce((sum, p) => sum + p.quantity * p.unit_price, 0);
 
     return (
         <AuthenticatedLayout>
@@ -58,32 +65,11 @@ export default function List({ list }) {
                 </div>
 
                 {/* Progress Card */}
-                <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-                    <div className="mb-4 flex items-center justify-between">
-                        <div>
-                            <h3 className="font-semibold text-gray-900">
-                                Progreso de Compra
-                            </h3>
-                            <p className="text-sm text-gray-600">
-                                ${completadoPrecio.toFixed(2)} de $
-                                {totalPrecio.toFixed(2)}
-                            </p>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-2xl font-bold text-emerald-600">
-                                {Math.round((completados / total) * 100)}%
-                            </p>
-                            <p className="text-sm text-gray-500">Completado</p>
-                        </div>
-                    </div>
-
-                    <div className="h-3 w-full rounded-full bg-gray-200">
-                        <div
-                            className="h-3 rounded-full bg-emerald-500 transition-all duration-500"
-                            style={{ width: `${(completados / total) * 100}%` }}
-                        ></div>
-                    </div>
-                </div>
+                <PurchaseProgressBar
+                    productos={productos}
+                    completados={completados}
+                    total={total}
+                />
 
                 {/* Search and Filters */}
                 <FilterTextModal setProductos={setProductos} list={list} />
@@ -155,6 +141,11 @@ export default function List({ list }) {
                                                 : 'text-gray-900'
                                         }`}
                                         onChange={(e) => {
+                                            if (e.target.value < 1) {
+                                                e.target.value = 1;
+                                                return;
+                                            }
+
                                             setProductos(
                                                 productos.map((p) =>
                                                     p.id === producto.id
@@ -166,6 +157,11 @@ export default function List({ list }) {
                                                           }
                                                         : p,
                                                 ),
+                                            );
+
+                                            handleChangeCount(
+                                                producto.id,
+                                                e.target.value,
                                             );
                                         }}
                                         defaultValue={producto.quantity}
@@ -208,6 +204,11 @@ export default function List({ list }) {
                                                           }
                                                         : p,
                                                 ),
+                                            );
+
+                                            handleChangePrice(
+                                                producto.id,
+                                                newPrice,
                                             );
                                         }}
                                         defaultValue={producto.unit_price.toFixed(
