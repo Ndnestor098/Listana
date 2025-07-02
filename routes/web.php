@@ -31,25 +31,14 @@ Route::get('/suggest-emails', function (Request $request) {
     $query = $request->input('q');
 
     $emails = User::where('email', 'like', '%' . $query . '%')
-        ->where('email', '!=', Auth::user()->email) // Excluir el correo del usuario autenticado
-        ->whereNotNull('email') // Asegurarse de que el correo no sea nulo
-        ->where('email', '!=', '') // Asegurarse de que el correo no esté vacío
+        ->where('email', '!=', Auth::user()->email)
+        ->whereNotNull('email')
+        ->where('email', '!=', '')
         ->limit(5)
-        ->pluck('email');
+        ->get(['id', 'email']);
 
-    // Ocultar parte del correo
-    $ocultos = $emails->map(function ($email) {
-        $parts = explode('@', $email);
-        $name = $parts[0];
-        $domain = $parts[1];
-
-        // Mostrar solo primeros 3 caracteres del nombre (o menos si es corto)
-        $visible = substr($name, 0, 3);
-        return $visible . '@...' . substr($domain, strrpos($domain, '.') + 1);
-    });
-
-    return response()->json($ocultos);
-})->name('search-email');
+    return response()->json($emails);
+})->middleware(['auth'])->name('search-email');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

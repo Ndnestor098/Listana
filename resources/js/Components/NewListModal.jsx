@@ -1,12 +1,10 @@
-import { router, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import axios from 'axios';
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function NewListModal({ isOpen, onClose }) {
-    if (!isOpen) return null;
-
-    const { data, setData, post } = useForm({
+    const { data, setData, post, errors } = useForm({
         name: '',
         category: '',
         emailInput: '',
@@ -30,8 +28,11 @@ export default function NewListModal({ isOpen, onClose }) {
 
     // Estado para manejar el texto del input de email
     const [emailText, setEmailText] = useState('');
+
+    // Estado para manejar los emails filtrados desde la API
     const [emailsFiltrados, setEmailsFiltrados] = useState([]);
 
+    // Estado para manejar si el modal está abierto
     useEffect(() => {
         if (emailText.length === 0) return;
 
@@ -47,11 +48,14 @@ export default function NewListModal({ isOpen, onClose }) {
             });
     }, [emailText]);
 
+    // Verifica si el modal está abierto
+    if (!isOpen) return null;
+
     // Función para agregar un email a la lista de seleccionados
-    const agregarEmail = (email) => {
+    const agregarEmail = (id, email) => {
         if (!emailsSeleccionados.includes(email)) {
             setEmailsSeleccionados([...emailsSeleccionados, email]);
-            setData({ ...data, emailInput: [...data.emailInput, email] });
+            setData({ ...data, emailInput: [...data.emailInput, id] });
             setShowSuggestions(false);
             setEmailText('');
         }
@@ -62,6 +66,11 @@ export default function NewListModal({ isOpen, onClose }) {
         setEmailsSeleccionados(
             emailsSeleccionados.filter((email) => email !== emailToRemove),
         );
+    };
+
+    const ocultarEmail = (email) => {
+        const [user, domain] = email.split('@');
+        return `${user.slice(0, 3)}@...${domain.split('.').pop()}`;
     };
 
     return (
@@ -95,6 +104,11 @@ export default function NewListModal({ isOpen, onClose }) {
                             placeholder="Ej: Supermercado Semanal"
                             required
                         />
+                        {errors.name && (
+                            <span className="block text-center text-xs text-red-500">
+                                {errors.name}
+                            </span>
+                        )}
                     </div>
 
                     <div>
@@ -122,6 +136,11 @@ export default function NewListModal({ isOpen, onClose }) {
                             <option value="Hogar">Hogar</option>
                             <option value="Otros">Otros</option>
                         </select>
+                        {errors.category && (
+                            <span className="block text-center text-xs text-red-500">
+                                {errors.category}
+                            </span>
+                        )}
                     </div>
 
                     <div className="relative">
@@ -145,18 +164,25 @@ export default function NewListModal({ isOpen, onClose }) {
                             className="w-full rounded-lg border border-gray-300 p-3 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
                             placeholder="Escribe un email..."
                         />
+                        {errors.emailInput && (
+                            <span className="block text-center text-xs text-red-500">
+                                {errors.emailInput}
+                            </span>
+                        )}
 
                         {/* Sugerencias de autocompletado */}
                         {showSuggestions && emailsFiltrados.length > 0 && (
                             <div className="absolute left-0 right-0 top-full z-10 mt-1 max-h-40 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
                                 {emailsFiltrados.slice(0, 5).map((email) => (
                                     <button
-                                        key={email}
+                                        key={email.email}
                                         type="button"
-                                        onClick={() => agregarEmail(email)}
+                                        onClick={() =>
+                                            agregarEmail(email.id, email.email)
+                                        }
                                         className="w-full border-b border-gray-100 px-3 py-2 text-left transition-colors last:border-b-0 hover:bg-emerald-50 hover:text-emerald-700"
                                     >
-                                        {email}
+                                        {ocultarEmail(email.email)}
                                     </button>
                                 ))}
                             </div>
@@ -175,7 +201,7 @@ export default function NewListModal({ isOpen, onClose }) {
                                         key={email}
                                         className="flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-800"
                                     >
-                                        <span>{email}</span>
+                                        <span>{ocultarEmail(email)}</span>
                                         <button
                                             type="button"
                                             onClick={() => removerEmail(email)}

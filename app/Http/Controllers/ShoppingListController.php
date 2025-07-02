@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ShoppingList;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -48,9 +49,23 @@ class ShoppingListController extends Controller
      */
     public function store(Request $request)
     {
-        return $request->all();
-    }
+        $request->validate([
+            'name' => 'required|string|max:255|unique:shopping_lists,name,NULL,id,user_id,' . Auth::id(),
+            'category' => 'required|string|max:255',
+            'emailInput' => 'array|nullable',
+            'emailInput.*' => 'integer|exists:users,id',
+        ]);
 
+        ShoppingList::create([
+            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+            'name' => $request->name,
+            'category' => $request->category,
+            'user_id' => Auth::id(),
+            'shared_user_ids' => $request->emailInput ?? [],
+        ]);
+
+        return back()->with('status', 'success');
+    }
     
 
     /**
