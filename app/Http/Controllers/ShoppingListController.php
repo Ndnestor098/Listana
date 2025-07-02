@@ -57,7 +57,7 @@ class ShoppingListController extends Controller
             'emailInput.*' => 'integer|exists:users,id',
         ]);
 
-        ShoppingList::create([
+        $list = ShoppingList::create([
             'uuid' => (string) \Illuminate\Support\Str::uuid(),
             'name' => $request->name,
             'category' => $request->category,
@@ -65,7 +65,9 @@ class ShoppingListController extends Controller
             'shared_user_ids' => $request->emailInput ?? [],
         ]);
 
-        return back()->with('status', 'success');
+        return redirect()->route('my-lists.show', [
+            'uuid' => $list->uuid,
+        ])->with('success', 'Lista creada exitosamente');
     }
     
 

@@ -1,4 +1,4 @@
-import NewListModal from '@/Components/NewListModal';
+import NewListModal from '@/Components/Modals/NewListModal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import { List, Package, Plus, ShoppingCart, TrendingUp } from 'lucide-react';

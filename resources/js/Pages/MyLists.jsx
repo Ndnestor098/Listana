@@ -1,3 +1,4 @@
+import NewListModal from '@/Components/Modals/NewListModal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import {
@@ -12,6 +13,7 @@ import { useState } from 'react';
 export default function MyLists({ lists }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredLists, setFilteredLists] = useState(lists);
+    const [showNuevaListaModal, setShowNuevaListaModal] = useState(false);
 
     const handleFilter = () => {
         if (searchTerm.length > 2) {
@@ -40,7 +42,12 @@ export default function MyLists({ lists }) {
                             Gestiona todas tus listas de compras
                         </p>
                     </div>
-                    <button className="flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors hover:bg-emerald-600">
+                    <button
+                        onClick={() => {
+                            setShowNuevaListaModal(true);
+                        }}
+                        className="flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors hover:bg-emerald-600"
+                    >
                         <Plus className="h-4 w-4" />
                         Nueva Lista
                     </button>
@@ -111,9 +118,14 @@ export default function MyLists({ lists }) {
                                     <div className="h-2 w-full rounded-full bg-gray-200">
                                         <div
                                             className="h-2 rounded-full bg-emerald-500 transition-all duration-300"
-                                            style={{
-                                                width: `${(list.completed_products / list.total_products) * 100}%`,
-                                            }}
+                                            style={
+                                                list.total_products === 0 &&
+                                                list.completed_products === 0
+                                                    ? { width: '0%' }
+                                                    : {
+                                                          width: `${(list.completed_products / list.total_products) * 100}%`,
+                                                      }
+                                            }
                                         ></div>
                                     </div>
 
@@ -144,6 +156,12 @@ export default function MyLists({ lists }) {
                     ))}
                 </div>
             </div>
+
+            {/* New List Modal */}
+            <NewListModal
+                isOpen={showNuevaListaModal}
+                onClose={() => setShowNuevaListaModal(false)}
+            />
         </AuthenticatedLayout>
     );
 }
