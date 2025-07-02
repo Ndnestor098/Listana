@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('category')->nullable();
             $table->integer('quantity')->default(1);
-            $table->decimal('unit_price', 8, 2)->nullable();
+            $table->decimal('unit_price', 8, 2)->nullable()->default(0);
             $table->enum('status', ['pending', 'bought', 'unavailable'])->default('pending');
             $table->text('notes')->nullable();
             

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ShoppingList;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -33,9 +35,24 @@ class ProductController extends Controller
             'category' => 'nullable|string|max:255',
             'quantity' => 'required|integer|min:1',
             'notes' => 'nullable|string|max:500',
+            'list_id' => 'required|exists:shopping_lists,id',
         ]);
 
-        return $request->all();
+        Product::create([
+            'name' => $request->name,
+            'category' => $request->category,
+            'quantity' => $request->quantity,
+            'notes' => $request->notes,
+            'shopping_list_id' => $request->list_id,
+            'user_id' => Auth::id(),
+            'uuid' => (string) \Illuminate\Support\Str::uuid(),
+        ]);
+
+        $list = ShoppingList::find($request->list_id);
+
+        return to_route('my-lists.show', [
+            'uuid' => $list->uuid
+        ]);
     }
 
     /**

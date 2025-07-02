@@ -15,6 +15,10 @@ class Product extends Model
         'quantity',
         'status',
         'shopping_list_id',
+        'category',
+        'notes',
+        'user_id',
+        'unit_price',
     ];
 
     /**
