@@ -68,7 +68,7 @@ class ShoppingListController extends Controller
         ]);
     }
     
-    public function deactivate(ShoppingList $shoppingList)
+    public function status(ShoppingList $shoppingList)
     {
         $shoppingList->update(['status' => $shoppingList->status === 'active' ? 'inactive' : 'active']);
 
@@ -98,6 +98,18 @@ class ShoppingListController extends Controller
      */
     public function destroy(ShoppingList $shoppingList)
     {
-        //
+        $shoppingList->delete();
+
+        $lists = ShoppingList::with(['products', 'sharedUsers'])
+            ->where('user_id', Auth::id())
+            ->orderBy('status', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Shopping list deleted successfully.',
+            'lists' => $lists,
+        ]);
     }
 }

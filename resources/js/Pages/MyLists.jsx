@@ -11,26 +11,31 @@ import {
     ShoppingCart,
     Trash2,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function MyLists({ lists }) {
     const [searchTerm, setSearchTerm] = useState('');
-    const [filteredLists, setFilteredLists] = useState(lists);
+    const [filteredLists, setFilteredLists] = useState([]);
     const [showNuevaListaModal, setShowNuevaListaModal] = useState(false);
     const [menuAbierto, setMenuAbierto] = useState(null);
     const [selectedList, setSelectedList] = useState(null);
 
+    useEffect(() => {
+        setFilteredLists(lists);
+    }, [lists]);
+
     const handleFilter = () => {
         if (searchTerm.length > 2) {
-            setFilteredLists(
-                lists.filter((list) =>
-                    list.name.toLowerCase().includes(searchTerm.toLowerCase()),
-                ),
+            const filtradas = lists.filter((list) =>
+                list.name.toLowerCase().includes(searchTerm.toLowerCase()),
             );
+            setFilteredLists(filtradas);
         } else {
             setFilteredLists(lists);
         }
     };
+
+    console.log(filteredLists);
 
     const handleMenuClick = (listaId, event) => {
         event.stopPropagation();
@@ -48,14 +53,18 @@ export default function MyLists({ lists }) {
             setSelectedList(list);
         } else if (accion === 'desactivar') {
             let response = await axios.post(
-                route('my-lists.deactivate', { shoppingList: list.id }),
+                route('my-lists.status', { shoppingList: list.id }),
             );
             if (response.status === 200) {
                 setFilteredLists(response.data.lists);
             }
         } else if (accion === 'eliminar') {
-            // Aquí podrías eliminar la lista
-            console.log('Eliminar lista:', list);
+            let response = await axios.post(
+                route('my-lists.destroy', { shoppingList: list.id }),
+            );
+            if (response.status === 200) {
+                setFilteredLists(response.data.lists);
+            }
         }
     };
 

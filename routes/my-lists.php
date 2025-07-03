@@ -9,4 +9,6 @@ Route::get('/s/{uuid}', [ShoppingListController::class, 'show'])->name('show');
 
 Route::post('/create-list', [ShoppingListController::class, 'store'])->name('store');
 
-Route::post('/deactivate/{shoppingList}', [ShoppingListController::class, 'deactivate'])->name('deactivate');
+Route::post('/status/{shoppingList}', [ShoppingListController::class, 'status'])->name('status');
+
+Route::post('/destroy/{shoppingList}', [ShoppingListController::class, 'destroy'])->name('destroy');
