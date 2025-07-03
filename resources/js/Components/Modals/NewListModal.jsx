@@ -33,6 +33,17 @@ export default function NewListModal({ isOpen, onClose, selectedList }) {
     // Función para manejar el envío del formulario
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        if (selectedList !== null) {
+            // Si se está editando una lista existente, actualiza la lista
+            post(route('my-lists.update', selectedList.id), {
+                onSuccess: () => {
+                    onClose();
+                },
+            });
+            return;
+        }
+
         post(route('my-lists.store'), {
             onSuccess: () => {
                 onClose();
@@ -247,7 +258,9 @@ export default function NewListModal({ isOpen, onClose, selectedList }) {
                             type="submit"
                             className="flex-1 rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors hover:bg-emerald-600"
                         >
-                            Crear Lista
+                            {selectedList !== null
+                                ? 'Actualizar Lista'
+                                : 'Crear Lista'}
                         </button>
                     </div>
                 </form>

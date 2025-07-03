@@ -90,7 +90,25 @@ class ShoppingListController extends Controller
      */
     public function update(Request $request, ShoppingList $shoppingList)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255|unique:shopping_lists,name,' . $shoppingList->id . ',id,user_id,' . Auth::id(),
+            'category' => 'required|string|max:255',
+            'emailInput' => 'array|nullable',
+            'emailInput.*' => 'integer|exists:users,id',
+        ]);
+
+        // Crear la lista sin shared_user_ids
+        $shoppingList->update([
+            'name' => $request->name,
+            'category' => $request->category,
+        ]);
+
+        // Asociar usuarios compartidos (relación muchos-a-muchos)
+        if (!empty($request->emailInput)) {
+            $shoppingList->sharedUsers()->sync($request->emailInput);
+        }
+
+        return redirect()->route('my-lists.index');
     }
 
     /**

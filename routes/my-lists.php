@@ -12,3 +12,5 @@ Route::post('/create-list', [ShoppingListController::class, 'store'])->name('sto
 Route::post('/status/{shoppingList}', [ShoppingListController::class, 'status'])->name('status');
 
 Route::post('/destroy/{shoppingList}', [ShoppingListController::class, 'destroy'])->name('destroy');
+
+Route::post('/update/{shoppingList}', [ShoppingListController::class, 'update'])->name('update');
