@@ -4,7 +4,7 @@ import PurchaseProgressBar from '@/Components/Modals/PurchaseProgressBar';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
-import { Check, Plus, ShoppingCart } from 'lucide-react';
+import { Check, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 export default function List({ list }) {
@@ -93,136 +93,149 @@ export default function List({ list }) {
                         {productos.map((producto) => (
                             <div
                                 key={producto.id}
-                                className={`flex items-center gap-4 p-4 transition-colors hover:bg-gray-50 ${
+                                className={`flex flex-col gap-4 p-4 transition-colors hover:bg-gray-50 sm:flex-row sm:items-center sm:justify-between ${
                                     producto.status != 'pending'
                                         ? 'bg-emerald-50'
                                         : ''
                                 }`}
                             >
-                                <button
-                                    onClick={() => toggleProducto(producto.id)}
-                                    className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 ${
-                                        producto.status != 'pending'
-                                            ? 'border-emerald-500 bg-emerald-500 text-white'
-                                            : 'border-gray-300 hover:border-emerald-400'
-                                    }`}
-                                >
-                                    {producto.status != 'pending' && (
-                                        <Check className="h-4 w-4" />
-                                    )}
-                                </button>
-
-                                <div
-                                    className="flex-1 cursor-pointer"
-                                    onClick={() => toggleProducto(producto.id)}
-                                >
-                                    <h3
-                                        className={`font-medium ${
+                                <div className="flex items-center gap-4">
+                                    <button
+                                        onClick={() =>
+                                            toggleProducto(producto.id)
+                                        }
+                                        className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 ${
                                             producto.status != 'pending'
-                                                ? 'text-gray-500 line-through'
-                                                : 'text-gray-900'
+                                                ? 'border-emerald-500 bg-emerald-500 text-white'
+                                                : 'border-gray-300 hover:border-emerald-400'
                                         }`}
                                     >
-                                        {producto.name}
-                                    </h3>
-                                    <p className="text-sm text-gray-500">
-                                        {producto.category || 'Uncategorized'}
-                                    </p>
-                                </div>
-
-                                <div className="text-right">
-                                    <span
-                                        className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
-                                            producto.status != 'pending'
-                                                ? 'text-gray-500'
-                                                : 'text-gray-900'
-                                        }`}
-                                    >
-                                        Count:
-                                    </span>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        className={`w-20 cursor-pointer border-none bg-transparent py-0 font-semibold ${
-                                            producto.status != 'pending'
-                                                ? 'text-gray-500'
-                                                : 'text-gray-900'
-                                        }`}
-                                        onChange={(e) => {
-                                            if (e.target.value < 1) {
-                                                e.target.value = 1;
-                                                return;
-                                            }
-
-                                            setProductos(
-                                                productos.map((p) =>
-                                                    p.id === producto.id
-                                                        ? {
-                                                              ...p,
-                                                              quantity:
-                                                                  e.target
-                                                                      .value,
-                                                          }
-                                                        : p,
-                                                ),
-                                            );
-
-                                            handleChangeCount(
-                                                producto.id,
-                                                e.target.value,
-                                            );
-                                        }}
-                                        defaultValue={producto.quantity}
-                                        disabled={producto.status != 'pending'}
-                                    />
-                                </div>
-
-                                <div className="text-right">
-                                    <span
-                                        className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
-                                            producto.status != 'pending'
-                                                ? 'text-gray-500'
-                                                : 'text-gray-900'
-                                        }`}
-                                    >
-                                        Price:
-                                    </span>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        step="0.01"
-                                        className={`w-24 cursor-pointer border-none bg-transparent py-0 font-semibold ${
-                                            producto.status != 'pending'
-                                                ? 'text-gray-500'
-                                                : 'text-gray-900'
-                                        }`}
-                                        disabled={producto.status != 'pending'}
-                                        onChange={(e) => {
-                                            const newPrice = parseFloat(
-                                                e.target.value,
-                                            );
-
-                                            setProductos(
-                                                productos.map((p) =>
-                                                    p.id === producto.id
-                                                        ? {
-                                                              ...p,
-                                                              unit_price:
-                                                                  newPrice,
-                                                          }
-                                                        : p,
-                                                ),
-                                            );
-
-                                            handleChangePrice(
-                                                producto.id,
-                                                newPrice,
-                                            );
-                                        }}
-                                        defaultValue={producto.unit_price.toFixed(
-                                            2,
+                                        {producto.status != 'pending' && (
+                                            <Check className="h-4 w-4" />
                                         )}
-                                    />
+                                    </button>
+
+                                    <div
+                                        className="flex-1 cursor-pointer"
+                                        onClick={() =>
+                                            toggleProducto(producto.id)
+                                        }
+                                    >
+                                        <h3
+                                            className={`font-medium ${
+                                                producto.status != 'pending'
+                                                    ? 'text-gray-500 line-through'
+                                                    : 'text-gray-900'
+                                            }`}
+                                        >
+                                            {producto.name}
+                                        </h3>
+                                        <p className="text-sm text-gray-500">
+                                            {producto.category ||
+                                                'Uncategorized'}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-center gap-4">
+                                    <div className="text-right">
+                                        <span
+                                            className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
+                                                producto.status != 'pending'
+                                                    ? 'text-gray-500'
+                                                    : 'text-gray-900'
+                                            }`}
+                                        >
+                                            Count:
+                                        </span>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            className={`w-20 cursor-pointer border-none bg-transparent py-0 font-semibold ${
+                                                producto.status != 'pending'
+                                                    ? 'text-gray-500'
+                                                    : 'text-gray-900'
+                                            }`}
+                                            onChange={(e) => {
+                                                if (e.target.value < 1) {
+                                                    e.target.value = 1;
+                                                    return;
+                                                }
+
+                                                setProductos(
+                                                    productos.map((p) =>
+                                                        p.id === producto.id
+                                                            ? {
+                                                                  ...p,
+                                                                  quantity:
+                                                                      e.target
+                                                                          .value,
+                                                              }
+                                                            : p,
+                                                    ),
+                                                );
+
+                                                handleChangeCount(
+                                                    producto.id,
+                                                    e.target.value,
+                                                );
+                                            }}
+                                            defaultValue={producto.quantity}
+                                            disabled={
+                                                producto.status != 'pending'
+                                            }
+                                        />
+                                    </div>
+
+                                    <div className="text-right">
+                                        <span
+                                            className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
+                                                producto.status != 'pending'
+                                                    ? 'text-gray-500'
+                                                    : 'text-gray-900'
+                                            }`}
+                                        >
+                                            Price:
+                                        </span>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            step="0.01"
+                                            className={`w-24 cursor-pointer border-none bg-transparent py-0 font-semibold ${
+                                                producto.status != 'pending'
+                                                    ? 'text-gray-500'
+                                                    : 'text-gray-900'
+                                            }`}
+                                            disabled={
+                                                producto.status != 'pending'
+                                            }
+                                            onChange={(e) => {
+                                                const newPrice = parseFloat(
+                                                    e.target.value,
+                                                );
+
+                                                setProductos(
+                                                    productos.map((p) =>
+                                                        p.id === producto.id
+                                                            ? {
+                                                                  ...p,
+                                                                  unit_price:
+                                                                      newPrice,
+                                                              }
+                                                            : p,
+                                                    ),
+                                                );
+
+                                                handleChangePrice(
+                                                    producto.id,
+                                                    newPrice,
+                                                );
+                                            }}
+                                            defaultValue={producto.unit_price.toFixed(
+                                                2,
+                                            )}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         ))}
@@ -230,9 +243,14 @@ export default function List({ list }) {
                 </div>
 
                 {/* Floating Action Button */}
-                <button className="fixed bottom-20 right-6 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-emerald-600 lg:bottom-6">
-                    <ShoppingCart className="h-6 w-6" />
-                </button>
+                <div className="fixed bottom-20 right-6 flex h-14 w-36 items-center justify-center rounded-lg bg-white shadow-lg transition-all duration-200 lg:bottom-6">
+                    <div className="text-center">
+                        <p className="text-2xl font-bold text-emerald-600">
+                            {Math.round((completados / total) * 100)}%
+                        </p>
+                        <p className="text-sm text-gray-700">Completado</p>
+                    </div>
+                </div>
             </div>
 
             <AddingProductModal
