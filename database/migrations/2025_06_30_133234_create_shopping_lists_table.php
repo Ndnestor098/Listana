@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('name')->unique();
-            $table->enum('status', ['active', 'completed', 'archived'])->default('active');
+            $table->enum('status', ['active', 'completed', 'archived', 'inactive'])->default('active');
             $table->string('category')->nullable();
             $table->decimal('initial_price', 10, 2)->default(0.00);
             $table->decimal('final_price', 10, 2)->default(0.00);

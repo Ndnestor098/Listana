@@ -41,16 +41,18 @@ export default function MyLists({ lists }) {
         setMenuAbierto(null);
     };
 
-    const handleAccionMenu = (accion, list) => {
+    const handleAccionMenu = async (accion, list) => {
         setMenuAbierto(null);
         if (accion === 'editar') {
-            // Aquí podrías abrir un modal para editar la lista
-            console.log('Editar lista:', list);
             setShowNuevaListaModal(true);
             setSelectedList(list);
         } else if (accion === 'desactivar') {
-            // Aquí podrías desactivar la lista
-            console.log('Desactivar lista:', list);
+            let response = await axios.post(
+                route('my-lists.deactivate', { shoppingList: list.id }),
+            );
+            if (response.status === 200) {
+                setFilteredLists(response.data.lists);
+            }
         } else if (accion === 'eliminar') {
             // Aquí podrías eliminar la lista
             console.log('Eliminar lista:', list);
@@ -170,7 +172,7 @@ export default function MyLists({ lists }) {
                                                     className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
                                                 >
                                                     <Power className="h-4 w-4" />
-                                                    {list.activa
+                                                    {list.status === 'active'
                                                         ? 'Desactivar'
                                                         : 'Activar'}
                                                 </button>

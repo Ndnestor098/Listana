@@ -39,14 +39,6 @@ class ShoppingListController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -76,13 +68,21 @@ class ShoppingListController extends Controller
         ]);
     }
     
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ShoppingList $shoppingList)
+    public function deactivate(ShoppingList $shoppingList)
     {
-        //
+        $shoppingList->update(['status' => $shoppingList->status === 'active' ? 'inactive' : 'active']);
+
+        $lists = ShoppingList::with(['products', 'sharedUsers'])
+            ->where('user_id', Auth::id())
+            ->orderBy('status', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Shopping list status updated successfully.',
+            'lists' => $lists,
+        ]);
     }
 
     /**
