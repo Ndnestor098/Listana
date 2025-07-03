@@ -15,8 +15,9 @@ class ShoppingListController extends Controller
      */
     public function index()
     {
-        $lists = ShoppingList::with('products')
+        $lists = ShoppingList::with(['products', 'sharedUsers'])
             ->where('user_id', Auth::id())
+            ->orderBy('status', 'asc')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -57,17 +58,22 @@ class ShoppingListController extends Controller
             'emailInput.*' => 'integer|exists:users,id',
         ]);
 
+        // Crear la lista sin shared_user_ids
         $list = ShoppingList::create([
             'uuid' => (string) \Illuminate\Support\Str::uuid(),
             'name' => $request->name,
             'category' => $request->category,
             'user_id' => Auth::id(),
-            'shared_user_ids' => $request->emailInput ?? [],
         ]);
+
+        // Asociar usuarios compartidos (relación muchos-a-muchos)
+        if (!empty($request->emailInput)) {
+            $list->sharedUsers()->sync($request->emailInput);
+        }
 
         return redirect()->route('my-lists.show', [
             'uuid' => $list->uuid,
-        ])->with('success', 'Lista creada exitosamente');
+        ]);
     }
     
 

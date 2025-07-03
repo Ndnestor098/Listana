@@ -3,12 +3,32 @@ import axios from 'axios';
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-export default function NewListModal({ isOpen, onClose }) {
+export default function NewListModal({ isOpen, onClose, selectedList }) {
     const { data, setData, post, errors } = useForm({
         name: '',
         category: '',
         emailInput: '',
     });
+
+    useEffect(() => {
+        if (selectedList !== null) {
+            setData({
+                name: selectedList.name || '',
+                category: selectedList.category || '',
+                emailInput: selectedList.shared_user_ids || [],
+            });
+
+            setEmailsSeleccionados(
+                selectedList.shared_users.map((user) => user.email),
+            );
+        } else {
+            setData({
+                name: '',
+                category: '',
+                emailInput: [],
+            });
+        }
+    }, [selectedList, setData]);
 
     // Función para manejar el envío del formulario
     const handleSubmit = (e) => {

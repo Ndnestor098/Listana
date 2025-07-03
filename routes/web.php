@@ -23,8 +23,12 @@ Route::get('/dashboard', function () {
         ->orderBy('created_at', 'desc')
         ->limit(5)
         ->get();
+    
+    $lists_count = ShoppingList::where('user_id', Auth::id())
+        ->orderBy('created_at', 'desc')
+        ->count();
 
-    return Inertia::render('Dashboard', compact('lists'));
+    return Inertia::render('Dashboard', compact(['lists', 'lists_count']));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/suggest-emails', function (Request $request) {

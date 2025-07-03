@@ -3,10 +3,13 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
 import {
     Calendar,
+    Edit,
     MoreVertical,
     Plus,
+    Power,
     Search,
     ShoppingCart,
+    Trash2,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -14,6 +17,8 @@ export default function MyLists({ lists }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredLists, setFilteredLists] = useState(lists);
     const [showNuevaListaModal, setShowNuevaListaModal] = useState(false);
+    const [menuAbierto, setMenuAbierto] = useState(null);
+    const [selectedList, setSelectedList] = useState(null);
 
     const handleFilter = () => {
         if (searchTerm.length > 2) {
@@ -27,11 +32,36 @@ export default function MyLists({ lists }) {
         }
     };
 
+    const handleMenuClick = (listaId, event) => {
+        event.stopPropagation();
+        setMenuAbierto(menuAbierto === listaId ? null : listaId);
+    };
+
+    const handleClickOutside = () => {
+        setMenuAbierto(null);
+    };
+
+    const handleAccionMenu = (accion, list) => {
+        setMenuAbierto(null);
+        if (accion === 'editar') {
+            // Aquí podrías abrir un modal para editar la lista
+            console.log('Editar lista:', list);
+            setShowNuevaListaModal(true);
+            setSelectedList(list);
+        } else if (accion === 'desactivar') {
+            // Aquí podrías desactivar la lista
+            console.log('Desactivar lista:', list);
+        } else if (accion === 'eliminar') {
+            // Aquí podrías eliminar la lista
+            console.log('Eliminar lista:', list);
+        }
+    };
+
     return (
         <AuthenticatedLayout>
             <Head title="My List" />
 
-            <div className="space-y-6">
+            <div className="space-y-6" onClick={handleClickOutside}>
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
@@ -44,6 +74,7 @@ export default function MyLists({ lists }) {
                     </div>
                     <button
                         onClick={() => {
+                            setSelectedList(null);
                             setShowNuevaListaModal(true);
                         }}
                         className="flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors hover:bg-emerald-600"
@@ -89,9 +120,14 @@ export default function MyLists({ lists }) {
                                             <h3 className="font-semibold text-gray-900">
                                                 {list.name}
                                             </h3>
-                                            {list.activa && (
+                                            {list.status === 'active' && (
                                                 <span className="rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800">
                                                     Activa
+                                                </span>
+                                            )}
+                                            {list.status != 'active' && (
+                                                <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-600">
+                                                    Inactiva
                                                 </span>
                                             )}
                                         </div>
@@ -99,9 +135,60 @@ export default function MyLists({ lists }) {
                                             {list.category || 'Uncategorized'}
                                         </p>
                                     </div>
-                                    <button className="rounded-full p-1 hover:bg-gray-100">
-                                        <MoreVertical className="h-4 w-4 text-gray-400" />
-                                    </button>
+                                    <div className="relative">
+                                        <button
+                                            onClick={(e) =>
+                                                handleMenuClick(list.id, e)
+                                            }
+                                            className="rounded-full p-1 transition-colors hover:bg-gray-100"
+                                        >
+                                            <MoreVertical className="h-4 w-4 text-gray-400" />
+                                        </button>
+
+                                        {/* Mini Menú Desplegable */}
+                                        {menuAbierto === list.id && (
+                                            <div className="absolute right-0 top-8 z-10 min-w-[140px] rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                                                <button
+                                                    onClick={() =>
+                                                        handleAccionMenu(
+                                                            'editar',
+                                                            list,
+                                                        )
+                                                    }
+                                                    className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                                                >
+                                                    <Edit className="h-4 w-4" />
+                                                    Editar
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        handleAccionMenu(
+                                                            'desactivar',
+                                                            list,
+                                                        )
+                                                    }
+                                                    className="flex w-full items-center gap-2 px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                                                >
+                                                    <Power className="h-4 w-4" />
+                                                    {list.activa
+                                                        ? 'Desactivar'
+                                                        : 'Activar'}
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        handleAccionMenu(
+                                                            'eliminar',
+                                                            list,
+                                                        )
+                                                    }
+                                                    className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                    Eliminar
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="space-y-3">
@@ -161,6 +248,7 @@ export default function MyLists({ lists }) {
             <NewListModal
                 isOpen={showNuevaListaModal}
                 onClose={() => setShowNuevaListaModal(false)}
+                selectedList={selectedList}
             />
         </AuthenticatedLayout>
     );

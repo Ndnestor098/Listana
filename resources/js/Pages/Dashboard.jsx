@@ -4,11 +4,11 @@ import { Head, Link } from '@inertiajs/react';
 import { List, Package, Plus, ShoppingCart, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 
-export default function Dashboard({ lists }) {
+export default function Dashboard({ lists, lists_count }) {
     const stats = [
         {
             label: 'Listas Activas',
-            value: '3',
+            value: lists_count,
             icon: List,
             color: 'text-emerald-500',
         },
