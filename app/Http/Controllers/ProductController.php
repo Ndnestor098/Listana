@@ -48,12 +48,11 @@ class ProductController extends Controller
             'uuid' => (string) \Illuminate\Support\Str::uuid(),
         ]);
 
-        $list = ShoppingList::find($request->list_id);
+        $list = ShoppingList::find($request->list_id)->refresh();
 
-        $list->update([
-            'total_products' => $list->products()->count(),
-            'total_price' => $list->products()->sum('unit_price'),
-        ]);
+        $list->total_products = $list->products()->count();
+        $list->final_price = $list->products()->sum('unit_price');  
+        $list->save();
 
         return response()->noContent();
     }
@@ -66,6 +65,7 @@ class ProductController extends Controller
         $request->validate([
             'quantity' => 'nullable|integer|min:1',
             'unit_price' => 'nullable|numeric|min:0',
+            'status' => 'nullable|in:pending,bought',
         ]);
 
         if ($request->has('unit_price')) {
@@ -79,7 +79,16 @@ class ProductController extends Controller
                 'quantity' => $request->quantity,
             ]);
         }
-        
+
+        if ($request->has('status')) {
+            $product->update([
+                'status' => $request->status,
+            ]);
+
+            $product->shoppingList()->update([
+                'completed_products' => $product->shoppingList->products()->where('status', 'bought')->count(),
+            ]);
+        }
 
         return response()->noContent();
     }

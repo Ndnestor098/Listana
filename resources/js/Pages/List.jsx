@@ -12,16 +12,18 @@ export default function List({ list }) {
     const [showAgregarModal, setShowAgregarModal] = useState(false);
 
     const toggleProducto = (id) => {
-        setProductos(
-            productos.map((p) =>
-                p.id === id
-                    ? {
-                          ...p,
-                          status: p.status === 'pending' ? 'bought' : 'pending',
-                      }
-                    : p,
-            ),
-        );
+        const updated = productos.map((p) => {
+            if (p.id === id) {
+                const newStatus = p.status === 'pending' ? 'bought' : 'pending';
+
+                handleChangeStatus(id, newStatus);
+
+                return { ...p, status: newStatus };
+            }
+            return p;
+        });
+
+        setProductos(updated);
     };
 
     const handleChangeCount = async (id, value) => {
@@ -33,6 +35,12 @@ export default function List({ list }) {
     const handleChangePrice = async (id, value) => {
         await axios.post(route('products.update', id), {
             unit_price: value,
+        });
+    };
+
+    const handleChangeStatus = async (id, value) => {
+        await axios.post(route('products.update', id), {
+            status: value,
         });
     };
 
