@@ -44,4 +44,8 @@ Route::get('/suggest-emails', function (Request $request) {
     return response()->json($emails);
 })->middleware(['auth'])->name('search-email');
 
+Route::get('/privacy' , function () {
+    return Inertia::render('Privacy');
+})->name('privacy');
+
 require __DIR__.'/auth.php';

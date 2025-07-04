@@ -79,7 +79,8 @@ export default function Configuracion() {
                             {section.items.map((item, itemIndex) => {
                                 const Icon = item.icon;
                                 return (
-                                    <button
+                                    <Link
+                                        href={route('privacy')}
                                         key={itemIndex}
                                         className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-gray-50"
                                     >
@@ -97,7 +98,7 @@ export default function Configuracion() {
                                             </div>
                                         </div>
                                         <ChevronRight className="h-5 w-5 text-gray-400" />
-                                    </button>
+                                    </Link>
                                 );
                             })}
                         </div>
