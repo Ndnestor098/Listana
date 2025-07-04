@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -35,9 +36,15 @@ class ProfileController extends Controller
             $request->user()->email_verified_at = null;
         }
 
+        if(Hash::check($request->user()->password, $request->password)){
+            $request->user()->password = bcrypt($request->password);
+        }
+
+        $request->user()->name = $request->name;
+
         $request->user()->save();
 
-        return Redirect::route('profile.edit');
+        return Redirect::route('config.index');
     }
 
     /**

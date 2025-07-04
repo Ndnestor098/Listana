@@ -3,7 +3,7 @@ import axios from 'axios';
 import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-export default function NewListModal({ isOpen, onClose, selectedList }) {
+export default function NewListModal({ isOpen, onClose, selectedList = null }) {
     const { data, setData, post, errors } = useForm({
         name: '',
         category: '',

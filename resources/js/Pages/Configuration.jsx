@@ -1,28 +1,27 @@
+import EditProfileModal from '@/Components/Modals/EditProfileModal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
-import {
-    Bell,
-    ChevronRight,
-    LogOut,
-    Palette,
-    Shield,
-    User,
-} from 'lucide-react';
+import { Head, Link, usePage } from '@inertiajs/react';
+import { ChevronRight, LogOut, Shield, User } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Configuracion() {
+    const { user } = usePage().props.auth;
+    const [showEditarPerfilModal, setShowEditarPerfilModal] = useState(false);
+
     const configSections = [
-        {
-            title: 'Perfil',
-            items: [
-                { icon: User, label: 'Información Personal', description: 'Nombre, email, foto de perfil' },
-                { icon: Bell, label: 'Notificaciones', description: 'Recordatorios y alertas' },
-            ],
-        },
         {
             title: 'Aplicación',
             items: [
-                { icon: Palette, label: 'Tema', description: 'Modo claro, oscuro o automático' },
-                { icon: Shield, label: 'Privacidad', description: 'Configuración de datos y privacidad' },
+                // {
+                //     icon: Bell,
+                //     label: 'Notificaciones',
+                //     description: 'Recordatorios y alertas',
+                // },
+                {
+                    icon: Shield,
+                    label: 'Privacidad',
+                    description: 'Configuración de datos y privacidad',
+                },
             ],
         },
     ];
@@ -31,76 +30,110 @@ export default function Configuracion() {
         <AuthenticatedLayout>
             <Head title="Dashboard" />
             <div className="space-y-6">
-            {/* Header */}
-            <div>
-                <h1 className="text-2xl font-bold text-gray-900">Configuración</h1>
-                <p className="text-gray-600">Personaliza tu experiencia en la aplicación</p>
-            </div>
+                {/* Header */}
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        Configuración
+                    </h1>
+                    <p className="text-gray-600">
+                        Personaliza tu experiencia en la aplicación
+                    </p>
+                </div>
 
-            {/* User Profile Card */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center">
-                    <User className="h-8 w-8 text-white" />
-                </div>
-                <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900">Usuario</h3>
-                    <p className="text-gray-600">usuario@email.com</p>
-                    <p className="text-sm text-emerald-600 mt-1">Cuenta Premium</p>
-                </div>
-                <button className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                    Editar
-                </button>
-                </div>
-            </div>
-
-            {/* Configuration Sections */}
-            {configSections.map((section, sectionIndex) => (
-                <div key={sectionIndex} className="bg-white rounded-xl shadow-sm border border-gray-100">
-                <div className="p-6 border-b border-gray-100">
-                    <h2 className="text-lg font-semibold text-gray-900">{section.title}</h2>
-                </div>
-                <div className="divide-y divide-gray-100">
-                    {section.items.map((item, itemIndex) => {
-                    const Icon = item.icon;
-                    return (
+                {/* User Profile Card */}
+                <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+                    <div className="flex items-center space-x-4">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500">
+                            <User className="h-8 w-8 text-white" />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="text-lg font-semibold text-gray-900">
+                                {user.name}
+                            </h3>
+                            <p className="text-gray-600">{user.email}</p>
+                            {/* <p className="mt-1 text-sm text-emerald-600">
+                                Cuenta Premium
+                            </p> */}
+                        </div>
                         <button
-                        key={itemIndex}
-                        className="w-full p-6 flex items-center justify-between hover:bg-gray-50 transition-colors text-left"
+                            onClick={() => setShowEditarPerfilModal(true)}
+                            className="rounded-lg border border-gray-300 px-4 py-2 transition-colors hover:bg-gray-50"
                         >
+                            Editar
+                        </button>
+                    </div>
+                </div>
+
+                {/* Configuration Sections */}
+                {configSections.map((section, sectionIndex) => (
+                    <div
+                        key={sectionIndex}
+                        className="rounded-xl border border-gray-100 bg-white shadow-sm"
+                    >
+                        <div className="border-b border-gray-100 p-6">
+                            <h2 className="text-lg font-semibold text-gray-900">
+                                {section.title}
+                            </h2>
+                        </div>
+                        <div className="divide-y divide-gray-100">
+                            {section.items.map((item, itemIndex) => {
+                                const Icon = item.icon;
+                                return (
+                                    <button
+                                        key={itemIndex}
+                                        className="flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-gray-50"
+                                    >
+                                        <div className="flex items-center space-x-4">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gray-100">
+                                                <Icon className="h-5 w-5 text-gray-600" />
+                                            </div>
+                                            <div>
+                                                <h3 className="font-medium text-gray-900">
+                                                    {item.label}
+                                                </h3>
+                                                <p className="text-sm text-gray-600">
+                                                    {item.description}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <ChevronRight className="h-5 w-5 text-gray-400" />
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    </div>
+                ))}
+
+                {/* Logout Button */}
+                <div className="rounded-xl border border-gray-100 bg-white shadow-sm">
+                    <Link
+                        href={route('logout')}
+                        method="post"
+                        as="button"
+                        className="group flex w-full items-center justify-between p-6 text-left transition-colors hover:bg-red-50"
+                    >
                         <div className="flex items-center space-x-4">
-                            <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <Icon className="h-5 w-5 text-gray-600" />
+                            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red-100 transition-colors group-hover:bg-red-200">
+                                <LogOut className="h-5 w-5 text-red-600" />
                             </div>
                             <div>
-                            <h3 className="font-medium text-gray-900">{item.label}</h3>
-                            <p className="text-sm text-gray-600">{item.description}</p>
+                                <h3 className="font-medium text-red-600">
+                                    Cerrar Sesión
+                                </h3>
+                                <p className="text-sm text-gray-600">
+                                    Salir de tu cuenta
+                                </p>
                             </div>
                         </div>
-                        <ChevronRight className="h-5 w-5 text-gray-400" />
-                        </button>
-                    );
-                    })}
+                        <ChevronRight className="h-5 w-5 text-red-400" />
+                    </Link>
                 </div>
-                </div>
-            ))}
+            </div>
 
-            {/* Logout Button */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-                <button className="w-full p-6 flex items-center justify-between hover:bg-red-50 transition-colors text-left group">
-                <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors">
-                    <LogOut className="h-5 w-5 text-red-600" />
-                    </div>
-                    <div>
-                    <h3 className="font-medium text-red-600">Cerrar Sesión</h3>
-                    <p className="text-sm text-gray-600">Salir de tu cuenta</p>
-                    </div>
-                </div>
-                <ChevronRight className="h-5 w-5 text-red-400" />
-                </button>
-            </div>
-            </div>
+            <EditProfileModal
+                isOpen={showEditarPerfilModal}
+                onClose={() => setShowEditarPerfilModal(false)}
+            />
         </AuthenticatedLayout>
     );
 }
