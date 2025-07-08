@@ -160,9 +160,9 @@ export default function Login() {
                         </p>
                         <Link
                             href={route('register')}
-                            className="w-full rounded-lg border border-gray-300 py-3 font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+                            className="w-full rounded-lg border border-gray-300 px-2 py-3 font-semibold text-gray-700 transition-colors hover:bg-gray-50"
                         >
-                            Crear cuenta nueva
+                            Registrarse
                         </Link>
                     </div>
                 </div>
@@ -170,7 +170,8 @@ export default function Login() {
                 {/* Footer */}
                 <div className="mt-8 text-center">
                     <p className="text-xs text-gray-400">
-                        © 2025 Listana. Todos los derechos reservados.
+                        © 2025 Listana. Todos los derechos reservados, menos
+                        los iconos.
                     </p>
                 </div>
             </div>
