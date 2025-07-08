@@ -17,14 +17,12 @@ export default function MyLists({ lists }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredLists, setFilteredLists] = useState([]);
     const [showNuevaListaModal, setShowNuevaListaModal] = useState(false);
-    const [menuAbierto, setMenuAbierto] = useState(null);
+    const [openMenu, setOpenMenu] = useState(null);
     const [selectedList, setSelectedList] = useState(null);
 
     useEffect(() => {
         setFilteredLists(lists);
     }, [lists]);
-
-    console.log(lists);
 
     const handleFilter = () => {
         if (searchTerm.length > 2) {
@@ -39,15 +37,15 @@ export default function MyLists({ lists }) {
 
     const handleMenuClick = (listaId, event) => {
         event.stopPropagation();
-        setMenuAbierto(menuAbierto === listaId ? null : listaId);
+        setOpenMenu(openMenu === listaId ? null : listaId);
     };
 
     const handleClickOutside = () => {
-        setMenuAbierto(null);
+        setOpenMenu(null);
     };
 
     const handleActionMenu = async (accion, list) => {
-        setMenuAbierto(null);
+        setOpenMenu(null);
         if (accion === 'editar') {
             setShowNuevaListaModal(true);
             setSelectedList(list);
@@ -70,7 +68,7 @@ export default function MyLists({ lists }) {
 
     return (
         <AuthenticatedLayout>
-            <Head title="My List" />
+            <Head title="Mis Listas" />
 
             <div className="space-y-6" onClick={handleClickOutside}>
                 {/* Header */}
@@ -157,7 +155,7 @@ export default function MyLists({ lists }) {
                                         </button>
 
                                         {/* Mini Menú Desplegable */}
-                                        {menuAbierto === list.id && (
+                                        {openMenu === list.id && (
                                             <div className="absolute right-0 top-8 z-10 min-w-[140px] rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
                                                 <button
                                                     onClick={() =>

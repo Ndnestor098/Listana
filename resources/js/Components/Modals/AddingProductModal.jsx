@@ -27,7 +27,6 @@ export default function AgregarProductoModal({ isOpen, onClose, id }) {
     function handleChange(e) {
         const key = e.target.name;
         const value = e.target.value;
-        console.log(key, value);
 
         setData((values) => ({
             ...values,

@@ -28,7 +28,7 @@ export default function Configuracion() {
 
     return (
         <AuthenticatedLayout>
-            <Head title="Dashboard" />
+            <Head title="Configuracion" />
             <div className="space-y-6">
                 {/* Header */}
                 <div>

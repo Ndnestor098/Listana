@@ -18,7 +18,7 @@ export default function NewListModal({ isOpen, onClose, selectedList = null }) {
                 emailInput: selectedList.shared_user_ids || [],
             });
 
-            setEmailsSeleccionados(
+            setSelectedEmail(
                 selectedList.shared_users.map((user) => user.email),
             );
         } else {
@@ -52,7 +52,7 @@ export default function NewListModal({ isOpen, onClose, selectedList = null }) {
     };
 
     // Estado para manejar los emails seleccionados y el texto del input
-    const [emailsSeleccionados, setEmailsSeleccionados] = useState([]);
+    const [selectedEmail, setSelectedEmail] = useState([]);
 
     // Estado para manejar la visibilidad de las sugerencias de autocompletado
     const [showSuggestions, setShowSuggestions] = useState(false);
@@ -61,7 +61,7 @@ export default function NewListModal({ isOpen, onClose, selectedList = null }) {
     const [emailText, setEmailText] = useState('');
 
     // Estado para manejar los emails filtrados desde la API
-    const [emailsFiltrados, setEmailsFiltrados] = useState([]);
+    const [leakedEmails, setLeakedEmails] = useState([]);
 
     // Estado para manejar si el modal está abierto
     useEffect(() => {
@@ -72,7 +72,7 @@ export default function NewListModal({ isOpen, onClose, selectedList = null }) {
                 params: { q: emailText },
             })
             .then((res) => {
-                setEmailsFiltrados(res.data);
+                setLeakedEmails(res.data);
             })
             .catch((err) => {
                 console.error('Error:', err);
@@ -83,9 +83,9 @@ export default function NewListModal({ isOpen, onClose, selectedList = null }) {
     if (!isOpen) return null;
 
     // Función para agregar un email a la lista de seleccionados
-    const agregarEmail = (id, email) => {
-        if (!emailsSeleccionados.includes(email)) {
-            setEmailsSeleccionados([...emailsSeleccionados, email]);
+    const addingEmail = (id, email) => {
+        if (!selectedEmail.includes(email)) {
+            setSelectedEmail([...selectedEmail, email]);
             setData({ ...data, emailInput: [...data.emailInput, id] });
             setShowSuggestions(false);
             setEmailText('');
@@ -93,13 +93,13 @@ export default function NewListModal({ isOpen, onClose, selectedList = null }) {
     };
 
     // Función para remover un email de la lista de seleccionados
-    const removerEmail = (emailToRemove) => {
-        setEmailsSeleccionados(
-            emailsSeleccionados.filter((email) => email !== emailToRemove),
+    const removeEmail = (emailToRemove) => {
+        setSelectedEmail(
+            selectedEmail.filter((email) => email !== emailToRemove),
         );
     };
 
-    const ocultarEmail = (email) => {
+    const hideEmail = (email) => {
         const [user, domain] = email.split('@');
         return `${user.slice(0, 3)}@...${domain.split('.').pop()}`;
     };
@@ -202,18 +202,18 @@ export default function NewListModal({ isOpen, onClose, selectedList = null }) {
                         )}
 
                         {/* Sugerencias de autocompletado */}
-                        {showSuggestions && emailsFiltrados.length > 0 && (
+                        {showSuggestions && leakedEmails.length > 0 && (
                             <div className="absolute left-0 right-0 top-full z-10 mt-1 max-h-40 overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
-                                {emailsFiltrados.slice(0, 5).map((email) => (
+                                {leakedEmails.slice(0, 5).map((email) => (
                                     <button
                                         key={email.email}
                                         type="button"
                                         onClick={() =>
-                                            agregarEmail(email.id, email.email)
+                                            addingEmail(email.id, email.email)
                                         }
                                         className="w-full border-b border-gray-100 px-3 py-2 text-left transition-colors last:border-b-0 hover:bg-emerald-50 hover:text-emerald-700"
                                     >
-                                        {ocultarEmail(email.email)}
+                                        {hideEmail(email.email)}
                                     </button>
                                 ))}
                             </div>
@@ -221,21 +221,21 @@ export default function NewListModal({ isOpen, onClose, selectedList = null }) {
                     </div>
 
                     {/* Burbujas de emails seleccionados */}
-                    {emailsSeleccionados.length > 0 && (
+                    {selectedEmail.length > 0 && (
                         <div>
                             <label className="mb-2 block text-sm font-medium text-gray-700">
                                 Emails seleccionados:
                             </label>
                             <div className="flex flex-wrap gap-2">
-                                {emailsSeleccionados.map((email) => (
+                                {selectedEmail.map((email) => (
                                     <div
                                         key={email}
                                         className="flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-sm text-emerald-800"
                                     >
-                                        <span>{ocultarEmail(email)}</span>
+                                        <span>{hideEmail(email)}</span>
                                         <button
                                             type="button"
-                                            onClick={() => removerEmail(email)}
+                                            onClick={() => removeEmail(email)}
                                             className="rounded-full p-1 transition-colors hover:bg-emerald-200"
                                         >
                                             <X className="h-3 w-3" />
