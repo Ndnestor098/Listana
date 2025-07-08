@@ -1,5 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import {
     Calendar,
     Cookie,
@@ -121,7 +121,9 @@ export default function Privacy() {
         },
     ];
 
-    return (
+    const user = usePage().props.auth.user;
+
+    return user ? (
         <AuthenticatedLayout>
             <Head title="Política de Privacidad" />
             <div className="space-y-6">
@@ -245,5 +247,129 @@ export default function Privacy() {
                 </div>
             </div>
         </AuthenticatedLayout>
+    ) : (
+        <div className="px-2 py-2">
+            <Head title="Política de Privacidad" />
+            <div className="space-y-6">
+                {/* Header */}
+                <div className="rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 p-8 text-white">
+                    <div className="mb-4 flex items-center gap-4">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white bg-opacity-20">
+                            <Shield className="h-8 w-8 text-white" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-bold">
+                                Política de Privacidad
+                            </h1>
+                            <div className="mt-2 flex items-center gap-2 text-emerald-100">
+                                <Calendar className="h-4 w-4" />
+                                <span className="text-sm">
+                                    Fecha de última actualización: 4 de julio de
+                                    2025
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <p className="text-lg leading-relaxed text-emerald-100">
+                        En Listana, nos tomamos muy en serio tu privacidad. Esta
+                        política explica cómo recopilamos, usamos y protegemos
+                        tu información personal al utilizar nuestra aplicación.
+                    </p>
+                </div>
+
+                {/* Contact Card */}
+                <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+                    <div className="flex items-center gap-4">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
+                            <Mail className="h-6 w-6 text-emerald-600" />
+                        </div>
+                        <div>
+                            <h3 className="font-semibold text-gray-900">
+                                ¿Tienes dudas sobre tu privacidad?
+                            </h3>
+                            <p className="text-gray-600">
+                                Contáctanos en:
+                                <a
+                                    href="mailto:trabajo.nestor.098@gmail.com"
+                                    className="ml-1 font-medium text-emerald-600 hover:text-emerald-700"
+                                >
+                                    trabajo.nestor.098@gmail.com
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Privacy Sections */}
+                <div className="space-y-6">
+                    {sections.map((section) => {
+                        const Icon = section.icon;
+                        return (
+                            <div
+                                key={section.id}
+                                className="rounded-xl border border-gray-100 bg-white shadow-sm"
+                            >
+                                <div className="p-6">
+                                    <div className="mb-4 flex items-center gap-4">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100">
+                                            <Icon className="h-5 w-5 text-emerald-600" />
+                                        </div>
+                                        <h2 className="text-xl font-semibold text-gray-900">
+                                            {section.id}. {section.title}
+                                        </h2>
+                                    </div>
+
+                                    <div className="space-y-3">
+                                        {section.content.map(
+                                            (paragraph, index) => (
+                                                <p
+                                                    key={index}
+                                                    className={`leading-relaxed text-gray-700 ${
+                                                        paragraph.startsWith(
+                                                            '•',
+                                                        )
+                                                            ? 'ml-4'
+                                                            : ''
+                                                    } ${
+                                                        paragraph === ''
+                                                            ? 'h-2'
+                                                            : ''
+                                                    } ${
+                                                        paragraph.includes('@')
+                                                            ? 'font-medium'
+                                                            : ''
+                                                    }`}
+                                                >
+                                                    {paragraph}
+                                                </p>
+                                            ),
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* Footer */}
+                <div className="rounded-xl border border-gray-200 bg-gray-50 p-6">
+                    <div className="text-center">
+                        <div className="mb-2 flex items-center justify-center gap-2">
+                            <Shield className="h-5 w-5 text-emerald-600" />
+                            <span className="font-semibold text-gray-900">
+                                Listana
+                            </span>
+                        </div>
+                        <p className="text-sm text-gray-600">
+                            Comprometidos con la protección de tu privacidad y
+                            datos personales.
+                        </p>
+                        <p className="mt-2 text-xs text-gray-500">
+                            © 2025 Listana. Todos los derechos reservados.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
