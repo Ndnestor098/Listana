@@ -1,9 +1,9 @@
-export default function PurchaseProgressBar({ productos, completados, total }) {
-    const totalPrecio = productos.reduce(
+export default function PurchaseProgressBar({ products, completed, total }) {
+    const totalPrices = products.reduce(
         (sum, p) => sum + p.quantity * p.unit_price,
         0,
     );
-    const completadoPrecio = productos
+    const completedPrices = products
         .filter((p) => p.status === 'bought')
         .reduce((sum, p) => sum + p.quantity * p.unit_price, 0);
 
@@ -15,13 +15,13 @@ export default function PurchaseProgressBar({ productos, completados, total }) {
                         Progreso de Compra
                     </h3>
                     <p className="text-sm text-gray-600">
-                        ${completadoPrecio.toFixed(2)} de $
-                        {totalPrecio.toFixed(2)}
+                        ${completedPrices.toFixed(2)} de $
+                        {totalPrices.toFixed(2)}
                     </p>
                 </div>
                 <div className="text-right">
                     <p className="text-2xl font-bold text-emerald-600">
-                        {Math.round((completados / total) * 100)}%
+                        {Math.round((completed / total) * 100)}%
                     </p>
                     <p className="text-sm text-gray-500">Completado</p>
                 </div>
@@ -30,7 +30,7 @@ export default function PurchaseProgressBar({ productos, completados, total }) {
             <div className="h-3 w-full rounded-full bg-gray-200">
                 <div
                     className="h-3 rounded-full bg-emerald-500 transition-all duration-500"
-                    style={{ width: `${(completados / total) * 100}%` }}
+                    style={{ width: `${(completed / total) * 100}%` }}
                 ></div>
             </div>
         </div>

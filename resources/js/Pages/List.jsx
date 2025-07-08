@@ -8,11 +8,11 @@ import { Check, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 export default function List({ list }) {
-    const [productos, setProductos] = useState(list.products);
+    const [products, setProducts] = useState(list.products);
     const [showAgregarModal, setShowAgregarModal] = useState(false);
 
-    const toggleProducto = (id) => {
-        const updated = productos.map((p) => {
+    const toggleProducts = (id) => {
+        const updated = products.map((p) => {
             if (p.id === id) {
                 const newStatus = p.status === 'pending' ? 'bought' : 'pending';
 
@@ -23,7 +23,7 @@ export default function List({ list }) {
             return p;
         });
 
-        setProductos(updated);
+        setProducts(updated);
     };
 
     const handleChangeCount = async (id, value) => {
@@ -44,8 +44,8 @@ export default function List({ list }) {
         });
     };
 
-    const completados = productos.filter((p) => p.status === 'bought').length;
-    const total = productos.length;
+    const completed = products.filter((p) => p.status === 'bought').length;
+    const total = products.length;
 
     return (
         <AuthenticatedLayout>
@@ -59,7 +59,7 @@ export default function List({ list }) {
                             {list.name}
                         </h1>
                         <p className="text-gray-600">
-                            Lista {list.status} • {completados} de {total + ' '}
+                            Lista {list.status} • {completed} de {total + ' '}
                             completados
                         </p>
                     </div>
@@ -74,23 +74,23 @@ export default function List({ list }) {
 
                 {/* Progress Card */}
                 <PurchaseProgressBar
-                    productos={productos}
-                    completados={completados}
+                    products={products}
+                    completed={completed}
                     total={total}
                 />
 
                 {/* Search and Filters */}
-                <FilterTextModal setProductos={setProductos} list={list} />
+                <FilterTextModal setProducts={setProducts} list={list} />
 
                 {/* Products List */}
                 <div className="rounded-xl border border-gray-100 bg-white shadow-sm">
                     <div className="border-b border-gray-100 p-6">
                         <h2 className="text-lg font-semibold text-gray-900">
-                            Productos
+                            productos
                         </h2>
                     </div>
                     <div className="divide-y divide-gray-100">
-                        {productos.map((producto) => (
+                        {products.map((producto) => (
                             <div
                                 key={producto.id}
                                 className={`flex flex-col gap-4 p-4 transition-colors hover:bg-gray-50 sm:flex-row sm:items-center sm:justify-between ${
@@ -102,7 +102,7 @@ export default function List({ list }) {
                                 <div className="flex items-center gap-4">
                                     <button
                                         onClick={() =>
-                                            toggleProducto(producto.id)
+                                            toggleProducts(producto.id)
                                         }
                                         className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 ${
                                             producto.status != 'pending'
@@ -118,7 +118,7 @@ export default function List({ list }) {
                                     <div
                                         className="flex-1 cursor-pointer"
                                         onClick={() =>
-                                            toggleProducto(producto.id)
+                                            toggleProducts(producto.id)
                                         }
                                     >
                                         <h3
@@ -132,7 +132,7 @@ export default function List({ list }) {
                                         </h3>
                                         <p className="text-sm text-gray-500">
                                             {producto.category ||
-                                                'Uncategorized'}
+                                                'Sin Categoria'}
                                         </p>
                                     </div>
                                 </div>
@@ -162,8 +162,8 @@ export default function List({ list }) {
                                                     return;
                                                 }
 
-                                                setProductos(
-                                                    productos.map((p) =>
+                                                setProducts(
+                                                    products.map((p) =>
                                                         p.id === producto.id
                                                             ? {
                                                                   ...p,
@@ -214,8 +214,8 @@ export default function List({ list }) {
                                                     e.target.value,
                                                 );
 
-                                                setProductos(
-                                                    productos.map((p) =>
+                                                setProducts(
+                                                    products.map((p) =>
                                                         p.id === producto.id
                                                             ? {
                                                                   ...p,
@@ -246,7 +246,7 @@ export default function List({ list }) {
                 <div className="fixed bottom-20 right-6 flex h-14 w-36 items-center justify-center rounded-lg bg-white shadow-lg transition-all duration-200 lg:bottom-6">
                     <div className="text-center">
                         <p className="text-2xl font-bold text-emerald-600">
-                            {Math.round((completados / total) * 100)}%
+                            {Math.round((completed / total) * 100)}%
                         </p>
                         <p className="text-sm text-gray-700">Completado</p>
                     </div>
