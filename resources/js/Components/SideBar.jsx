@@ -11,13 +11,13 @@ export default function SideBar() {
         },
         {
             id: 'my-lists.index',
-            label: 'My lists',
+            label: 'Mis Listas',
             icon: List,
             path: route('my-lists.index'),
         },
         {
             id: 'config.index',
-            label: 'Configuration',
+            label: 'Configuracion',
             icon: Settings,
             path: '/config',
         },

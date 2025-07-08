@@ -35,8 +35,6 @@ export default function MyLists({ lists }) {
         }
     };
 
-    console.log(filteredLists);
-
     const handleMenuClick = (listaId, event) => {
         event.stopPropagation();
         setMenuAbierto(menuAbierto === listaId ? null : listaId);
@@ -46,7 +44,7 @@ export default function MyLists({ lists }) {
         setMenuAbierto(null);
     };
 
-    const handleAccionMenu = async (accion, list) => {
+    const handleActionMenu = async (accion, list) => {
         setMenuAbierto(null);
         if (accion === 'editar') {
             setShowNuevaListaModal(true);
@@ -161,7 +159,7 @@ export default function MyLists({ lists }) {
                                             <div className="absolute right-0 top-8 z-10 min-w-[140px] rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
                                                 <button
                                                     onClick={() =>
-                                                        handleAccionMenu(
+                                                        handleActionMenu(
                                                             'editar',
                                                             list,
                                                         )
@@ -173,7 +171,7 @@ export default function MyLists({ lists }) {
                                                 </button>
                                                 <button
                                                     onClick={() =>
-                                                        handleAccionMenu(
+                                                        handleActionMenu(
                                                             'desactivar',
                                                             list,
                                                         )
@@ -187,7 +185,7 @@ export default function MyLists({ lists }) {
                                                 </button>
                                                 <button
                                                     onClick={() =>
-                                                        handleAccionMenu(
+                                                        handleActionMenu(
                                                             'eliminar',
                                                             list,
                                                         )

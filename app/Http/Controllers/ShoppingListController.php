@@ -16,7 +16,12 @@ class ShoppingListController extends Controller
     public function index()
     {
         $lists = ShoppingList::with(['products', 'sharedUsers'])
-            ->where('user_id', Auth::id())
+            ->where(function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->orWhereHas('sharedUsers', function ($q) {
+                        $q->where('user_id', Auth::id());
+                    });
+            })
             ->orderBy('status', 'asc')
             ->orderBy('created_at', 'desc')
             ->get();
