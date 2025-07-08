@@ -15,7 +15,7 @@ class ShoppingListController extends Controller
      */
     public function index()
     {
-        $lists = ShoppingList::with(['products', 'sharedUsers'])
+        $lists = ShoppingList::with(['products', 'sharedUsers', 'owner'])
             ->where(function ($query) {
                 $query->where('user_id', Auth::id())
                     ->orWhereHas('sharedUsers', function ($q) {

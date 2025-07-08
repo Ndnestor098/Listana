@@ -37,4 +37,9 @@ class ShoppingList extends Model
         return $this->belongsToMany(User::class);
     }
 
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 }

@@ -24,6 +24,8 @@ export default function MyLists({ lists }) {
         setFilteredLists(lists);
     }, [lists]);
 
+    console.log(lists);
+
     const handleFilter = () => {
         if (searchTerm.length > 2) {
             const filtradas = lists.filter((list) =>
@@ -239,7 +241,15 @@ export default function MyLists({ lists }) {
                                     </div>
                                 </div>
 
-                                <div className="mt-4 border-t border-gray-100 pt-4">
+                                {list.owner && (
+                                    <div className="space-y-3">
+                                        <span className="text-xs text-gray-500">
+                                            Creado por: {list.owner.name}
+                                        </span>
+                                    </div>
+                                )}
+
+                                <div className="mt-2 border-t border-gray-100 pt-4">
                                     <Link
                                         href={route('my-lists.show', list.uuid)}
                                         className="block w-full rounded-lg bg-emerald-50 px-4 py-2 text-center font-medium text-emerald-700 transition-colors hover:bg-emerald-100"
