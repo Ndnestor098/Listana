@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\Product;
 use App\Models\ShoppingList;
 use App\Models\User;
 use Illuminate\Foundation\Application;
@@ -23,7 +24,20 @@ Route::get('/dashboard', function () {
         ->orderBy('created_at', 'desc')
         ->count();
 
-    return Inertia::render('Dashboard', compact(['lists', 'lists_count']));
+    $pending_products_count = Product::where('user_id', Auth::id())
+        ->where('status', '!=', 'bought')
+        ->count();
+
+    $bought_products_count = Product::where('user_id', Auth::id())
+        ->where('status', 'bought')
+        ->count();
+
+    return Inertia::render('Dashboard', compact([
+        'lists',
+        'lists_count',
+        'bought_products_count',
+        'pending_products_count',
+    ]));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/suggest-emails', function (Request $request) {

@@ -1,10 +1,15 @@
 import NewListModal from '@/Components/Modals/NewListModal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
-import { List, Package, Plus, ShoppingCart, TrendingUp } from 'lucide-react';
+import { List, Package, Plus, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 
-export default function Dashboard({ lists, lists_count }) {
+export default function Dashboard({
+    lists,
+    lists_count,
+    bought_products_count,
+    pending_products_count,
+}) {
     const stats = [
         {
             label: 'Listas Activas',
@@ -14,21 +19,15 @@ export default function Dashboard({ lists, lists_count }) {
         },
         {
             label: 'Productos Pendientes',
-            value: '12',
+            value: pending_products_count,
             icon: ShoppingCart,
             color: 'text-blue-500',
         },
         {
             label: 'Compras Completadas',
-            value: '8',
+            value: bought_products_count,
             icon: Package,
             color: 'text-purple-500',
-        },
-        {
-            label: 'Ahorro del Mes',
-            value: '$150',
-            icon: TrendingUp,
-            color: 'text-green-500',
         },
     ];
 
@@ -61,7 +60,7 @@ export default function Dashboard({ lists, lists_count }) {
                 </div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {stats.map((stat, index) => {
                         const Icon = stat.icon;
                         return (
