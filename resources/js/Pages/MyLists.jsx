@@ -1,3 +1,4 @@
+import BrowserWarningBubble from '@/Components/BrowserWarningBubble';
 import NewListModal from '@/Components/Modals/NewListModal';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/react';
@@ -267,6 +268,8 @@ export default function MyLists({ lists }) {
                 onClose={() => setShowNuevaListaModal(false)}
                 selectedList={selectedList}
             />
+
+            <BrowserWarningBubble />
         </AuthenticatedLayout>
     );
 }
