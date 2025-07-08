@@ -15,18 +15,6 @@ export default function SideBar() {
             icon: List,
             path: route('my-lists.index'),
         },
-        // {
-        //     id: 'activa',
-        //     label: 'Lista Activa',
-        //     icon: ShoppingCart,
-        //     path: '/activa',
-        // },
-        // {
-        //     id: 'history',
-        //     label: 'History',
-        //     icon: Package,
-        //     path: '/history',
-        // },
         {
             id: 'config.index',
             label: 'Configuration',

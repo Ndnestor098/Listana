@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { Home, List, ShoppingCart, Package, Settings } from 'lucide-react';
+import { Home, List, Settings } from 'lucide-react';
 
 export default function BottomNavigation() {
     const menuItems = [
@@ -15,24 +15,12 @@ export default function BottomNavigation() {
             icon: List,
             path: route('my-lists.index'),
         },
-        // {
-        //     id: 'activa',
-        //     label: 'Lista Activa',
-        //     icon: ShoppingCart,
-        //     path: '/activa',
-        // },
-        // {
-        //     id: 'history',
-        //     label: 'History',
-        //     icon: Package,
-        //     path: '/history',
-        // },
-        // {
-        //     id: 'config',
-        //     label: 'Configuration',
-        //     icon: Settings,
-        //     path: '/config',
-        // },
+        {
+            id: 'config.index',
+            label: 'Configuration',
+            icon: Settings,
+            path: '/config',
+        },
     ];
 
     return (

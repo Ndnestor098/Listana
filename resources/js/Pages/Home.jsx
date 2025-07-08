@@ -139,7 +139,8 @@ export default function Home() {
                 {/* Pie de página */}
                 <footer className="py-6 text-center">
                     <p className="text-xs text-gray-400">
-                        © 2025 Listana. Todos los derechos reservados.
+                        © 2025 Listana. Todos los derechos reservados, menos
+                        los iconos.
                     </p>
                 </footer>
             </div>
