@@ -22,7 +22,14 @@ export default function Home() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <Head title="Home" />
+            <Head>
+                <title>Listana</title>
+                <meta
+                    name="description"
+                    content="Listana es una aplicación moderna para crear, gestionar y compartir listas de compras con otros usuarios. Organiza tus productos, controla tus gastos y mejora tu experiencia al hacer compras."
+                />
+            </Head>
+
             <div className="mx-auto max-w-4xl px-4 py-12">
                 {/* Header Principal */}
                 <div className="mb-12 text-center">
