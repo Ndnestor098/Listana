@@ -69,7 +69,13 @@ export default function MyLists({ lists }) {
 
     return (
         <AuthenticatedLayout>
-            <Head title="Mis Listas" />
+            <Head>
+                <title>Mis Listas - Listana</title>
+                <meta
+                    name="description"
+                    content="Gestiona todas tus listas de compras desde un solo lugar. Consulta el número de productos, colaboradores y estado de cada lista en Listana."
+                />
+            </Head>
 
             <div className="space-y-6" onClick={handleClickOutside}>
                 {/* Header */}
