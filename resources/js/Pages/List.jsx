@@ -235,8 +235,15 @@ export default function List({ list }) {
                                                 );
                                             }}
                                             defaultValue={
-                                                producto.unit_price &&
-                                                producto.unit_price.toFixed(2)
+                                                typeof producto.unit_price ===
+                                                'number'
+                                                    ? producto.unit_price.toFixed(
+                                                          2,
+                                                      )
+                                                    : parseFloat(
+                                                          producto.unit_price ||
+                                                              0,
+                                                      ).toFixed(2)
                                             }
                                         />
                                     </div>
