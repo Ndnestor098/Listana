@@ -28,7 +28,14 @@ export default function Configuracion() {
 
     return (
         <AuthenticatedLayout>
-            <Head title="Configuracion" />
+            <Head>
+                <title>Configuración - Listana</title>
+                <meta
+                    name="description"
+                    content="Actualiza tu información personal, cambia tu contraseña y personaliza tu experiencia en Listana desde la sección de configuración."
+                />
+            </Head>
+
             <div className="space-y-6">
                 {/* Header */}
                 <div>
