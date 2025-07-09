@@ -24,7 +24,7 @@ export default function BottomNavigation() {
     ];
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-800 bg-gray-900 px-2 py-2 lg:hidden">
+        <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-gray-800 bg-gray-900 px-2 py-2 lg:hidden">
             <div className="flex justify-around">
                 {menuItems.map((item) => {
                     const Icon = item.icon;

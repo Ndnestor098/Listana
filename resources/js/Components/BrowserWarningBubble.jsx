@@ -13,7 +13,7 @@ export default function BrowserWarningBubble() {
             {/* Floating Bubble Button */}
             <button
                 onClick={toggleVisibility}
-                className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-amber-500 text-white shadow-lg transition-all duration-200 hover:bg-amber-600 hover:shadow-xl"
+                className="fixed bottom-20 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-amber-500 text-white shadow-lg transition-all duration-200 hover:bg-amber-600 hover:shadow-xl lg:bottom-6 lg:right-6"
                 aria-label="Advertencia sobre extensiones del navegador"
             >
                 <AlertTriangle className="h-6 w-6" />
