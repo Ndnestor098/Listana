@@ -234,9 +234,10 @@ export default function List({ list }) {
                                                     newPrice,
                                                 );
                                             }}
-                                            defaultValue={producto.unit_price.toFixed(
-                                                2,
-                                            )}
+                                            defaultValue={
+                                                producto.unit_price &&
+                                                producto.unit_price.toFixed(2)
+                                            }
                                         />
                                     </div>
                                 </div>
