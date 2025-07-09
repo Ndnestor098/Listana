@@ -49,7 +49,10 @@ export default function List({ list }) {
 
     return (
         <AuthenticatedLayout>
-            <Head title={'List: ' + list.name} />
+            <Head
+                title={`${list.name} - Lista de Compras | Listana`}
+                description={`Consulta o edita tu lista "${list.name}". Revisa productos añadidos, colabora con otros usuarios y lleva el control de tus compras en Listana.`}
+            />
 
             <div className="space-y-6">
                 {/* Header */}
