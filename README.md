@@ -98,4 +98,3 @@ Este proyecto está en constante mejora. Si deseas contribuir, envía un Pull Re
 ## © Licencia
 
 Listana es un proyecto personal. Todos los derechos reservados. Puedes usarlo con fines educativos o personales.
-
