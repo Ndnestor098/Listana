@@ -1,0 +1,11 @@
+services:
+  saldofacile:
+    container_name: listana
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./:/var/www
+    ports:
+      - "8500:8500"
+    restart : always
