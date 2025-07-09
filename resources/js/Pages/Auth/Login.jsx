@@ -22,7 +22,7 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        post(route('login'), {
+        post('/login', {
             onSuccess: () => {
                 setIsLoading(false);
             },
