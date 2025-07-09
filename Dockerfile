@@ -41,4 +41,4 @@ RUN php artisan key:generate
 RUN php artisan migrate
 
 # Iniziar servidor
-CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8500"]
+CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8700"]
