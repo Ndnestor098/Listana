@@ -35,7 +35,13 @@ export default function Dashboard({
 
     return (
         <AuthenticatedLayout>
-            <Head title="Dashboard" />
+            <Head>
+                <title>Dashboard - Listana</title>
+                <meta
+                    name="description"
+                    content="Consulta el resumen de tu actividad en Listana: listas activas, productos pendientes y progreso de tus compras. Gestiona todo de forma rápida y clara desde tu panel principal."
+                />
+            </Head>
 
             <div className="space-y-6">
                 {/* Header */}
