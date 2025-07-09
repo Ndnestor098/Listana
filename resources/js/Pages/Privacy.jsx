@@ -125,7 +125,14 @@ export default function Privacy() {
 
     return user ? (
         <AuthenticatedLayout>
-            <Head title="Política de Privacidad" />
+            <Head>
+                <title>Política de Privacidad - Listana</title>
+                <meta
+                    name="description"
+                    content="Conoce cómo Listana protege tus datos. No compartimos tu información con terceros. Descubre nuestras políticas de seguridad, almacenamiento y uso responsable de tus datos."
+                />
+            </Head>
+
             <div className="space-y-6">
                 {/* Header */}
                 <div className="rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 p-8 text-white">
@@ -249,7 +256,14 @@ export default function Privacy() {
         </AuthenticatedLayout>
     ) : (
         <div className="px-2 py-2">
-            <Head title="Política de Privacidad" />
+            <Head>
+                <title>Política de Privacidad - Listana</title>
+                <meta
+                    name="description"
+                    content="Conoce cómo Listana protege tus datos. No compartimos tu información con terceros. Descubre nuestras políticas de seguridad, almacenamiento y uso responsable de tus datos."
+                />
+            </Head>
+
             <div className="space-y-6">
                 {/* Header */}
                 <div className="rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 p-8 text-white">
