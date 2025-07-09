@@ -28,6 +28,11 @@ export default function SideBar() {
         <div className="hidden border-r border-gray-800 bg-gray-900 lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col">
             {/* Logo/Header */}
             <div className="flex h-16 items-center justify-center border-b border-gray-800 px-4">
+                <img
+                    className="mr-2 h-8 w-8"
+                    src="/assets/images/logo.png"
+                    alt="Logotipo de Listana"
+                />
                 <h1 className="text-xl font-bold text-white">Listana</h1>
             </div>
 
