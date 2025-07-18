@@ -4,12 +4,20 @@ import PurchaseProgressBar from '@/Components/Modals/PurchaseProgressBar';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
-import { Check, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { Check, Edit2, Plus, Trash2 } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 export default function List({ list }) {
     const [products, setProducts] = useState(list.products);
     const [showAgregarModal, setShowAgregarModal] = useState(false);
+    const [contextMenu, setContextMenu] = useState({
+        isOpen: false,
+        x: 0,
+        y: 0,
+        productId: null,
+    });
+    const [editProduct, setEditProduct] = useState();
+    const contextMenuRef = useRef(null);
 
     const toggleProducts = (id) => {
         const updated = products.map((p) => {
@@ -26,22 +34,116 @@ export default function List({ list }) {
         setProducts(updated);
     };
 
-    const handleChangeCount = async (id, value) => {
-        await axios.post(route('products.update', id), {
-            quantity: value,
+    const handleChangeCount = async (id, value, retries = 5) => {
+        try {
+            await axios.post(route('products.update', id), {
+                quantity: value,
+            });
+        } catch (error) {
+            if (error.code === 'ERR_NETWORK' && retries > 0) {
+                console.warn(
+                    `Network error, reintentando... (${4 - retries}/3)`,
+                );
+
+                setTimeout(() => {
+                    handleChangePrice(id, value, retries - 1);
+                }, 5000);
+            } else {
+                console.error('Error al cambiar las Cantidades:', error);
+            }
+        }
+    };
+
+    const handleChangePrice = async (id, value, retries = 5) => {
+        try {
+            await axios.post(route('products.update', id), {
+                unit_price: value,
+            });
+        } catch (error) {
+            if (error.code === 'ERR_NETWORK' && retries > 0) {
+                console.warn(
+                    `Network error, reintentando... (${4 - retries}/3)`,
+                );
+
+                setTimeout(() => {
+                    handleChangePrice(id, value, retries - 1);
+                }, 5000);
+            } else {
+                console.error('Error al cambiar el precio:', error);
+            }
+        }
+    };
+
+    const handleChangeStatus = async (id, value, retries = 5) => {
+        try {
+            await axios.post(route('products.update-status', id), {
+                status: value,
+            });
+        } catch (error) {
+            if (error.code === 'ERR_NETWORK' && retries > 0) {
+                console.warn(
+                    `Network error, reintentando... (${4 - retries}/3)`,
+                );
+
+                setTimeout(() => {
+                    handleChangeStatus(id, value, retries - 1);
+                }, 5000);
+            } else {
+                console.error('Error al cambiar el estado:', error);
+            }
+        }
+    };
+
+    const handleDelete = async (id, retries = 5) => {
+        try {
+            await axios.post(route('products.destroy', { product: id }));
+            setProducts(products.filter((p) => p.id !== id));
+        } catch (error) {
+            if (error.code === 'ERR_NETWORK' && retries > 0) {
+                console.warn(
+                    `Network error, reintentando... (${4 - retries}/3)`,
+                );
+
+                setTimeout(() => {
+                    handleDelete(id, value, retries - 1);
+                }, 5000);
+            } else {
+                console.error('Error al eliminar el producto:', error);
+                console.error(error);
+            }
+        }
+    };
+
+    const handleEdit = (id) => {
+        setEditProduct(products.find((p) => p.id === id));
+        setShowAgregarModal(true);
+    };
+
+    const handleRightClick = (e, productId) => {
+        e.preventDefault();
+        setContextMenu({
+            isOpen: true,
+            x: e.clientX,
+            y: e.clientY,
+            productId: productId,
         });
     };
 
-    const handleChangePrice = async (id, value) => {
-        await axios.post(route('products.update', id), {
-            unit_price: value,
-        });
+    const handleTouchStart = (e, productId) => {
+        // Empieza el timer cuando toca la pantalla
+        timerRef.current = setTimeout(() => {
+            handleRightClick(e, productId);
+        }, 600); // 600ms para considerar long press
     };
 
-    const handleChangeStatus = async (id, value) => {
-        await axios.post(route('products.update', id), {
-            status: value,
-        });
+    const handleTouchEnd = () => {
+        // Cancela el timer si quita el dedo antes del tiempo
+        clearTimeout(timerRef.current);
+    };
+
+    const handleTouchMove = () => {
+        // Cancela si se mueve el dedo (no es long press)
+        clearTimeout(timerRef.current);
     };
 
     const completed = products.filter((p) => p.status === 'bought').length;
@@ -54,7 +156,12 @@ export default function List({ list }) {
                 description={`Consulta o edita tu lista "${list.name}". Revisa productos añadidos, colabora con otros usuarios y lleva el control de tus compras en Listana.`}
             />
 
-            <div className="space-y-6">
+            <div
+                onClick={() =>
+                    setContextMenu({ ...contextMenu, isOpen: false })
+                }
+                className="space-y-6"
+            >
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
@@ -93,27 +200,35 @@ export default function List({ list }) {
                         </h2>
                     </div>
                     <div className="divide-y divide-gray-100">
-                        {products.map((producto) => (
+                        {products.map((product) => (
                             <div
-                                key={producto.id}
+                                key={product.id}
                                 className={`flex flex-col gap-4 p-4 transition-colors hover:bg-gray-50 sm:flex-row sm:items-center sm:justify-between ${
-                                    producto.status != 'pending'
+                                    product.status != 'pending'
                                         ? 'bg-emerald-50'
                                         : ''
                                 }`}
+                                onContextMenu={(e) =>
+                                    handleRightClick(e, product.id)
+                                }
+                                onTouchStart={(e) =>
+                                    handleTouchStart(e, product.id)
+                                }
+                                onTouchEnd={handleTouchEnd}
+                                onTouchMove={handleTouchMove}
                             >
                                 <div className="flex items-center gap-4">
                                     <button
                                         onClick={() =>
-                                            toggleProducts(producto.id)
+                                            toggleProducts(product.id)
                                         }
                                         className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 ${
-                                            producto.status != 'pending'
+                                            product.status != 'pending'
                                                 ? 'border-emerald-500 bg-emerald-500 text-white'
                                                 : 'border-gray-300 hover:border-emerald-400'
                                         }`}
                                     >
-                                        {producto.status != 'pending' && (
+                                        {product.status != 'pending' && (
                                             <Check className="h-4 w-4" />
                                         )}
                                     </button>
@@ -121,20 +236,20 @@ export default function List({ list }) {
                                     <div
                                         className="flex-1 cursor-pointer"
                                         onClick={() =>
-                                            toggleProducts(producto.id)
+                                            toggleProducts(product.id)
                                         }
                                     >
                                         <h3
                                             className={`font-medium ${
-                                                producto.status != 'pending'
+                                                product.status != 'pending'
                                                     ? 'text-gray-500 line-through'
                                                     : 'text-gray-900'
                                             }`}
                                         >
-                                            {producto.name}
+                                            {product.name}
                                         </h3>
                                         <p className="text-sm text-gray-500">
-                                            {producto.category ||
+                                            {product.category ||
                                                 'Sin Categoria'}
                                         </p>
                                     </div>
@@ -144,7 +259,7 @@ export default function List({ list }) {
                                     <div className="text-right">
                                         <span
                                             className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
-                                                producto.status != 'pending'
+                                                product.status != 'pending'
                                                     ? 'text-gray-500'
                                                     : 'text-gray-900'
                                             }`}
@@ -155,7 +270,7 @@ export default function List({ list }) {
                                             type="number"
                                             min="1"
                                             className={`w-20 cursor-pointer border-none bg-transparent py-0 font-semibold ${
-                                                producto.status != 'pending'
+                                                product.status != 'pending'
                                                     ? 'text-gray-500'
                                                     : 'text-gray-900'
                                             }`}
@@ -167,7 +282,7 @@ export default function List({ list }) {
 
                                                 setProducts(
                                                     products.map((p) =>
-                                                        p.id === producto.id
+                                                        p.id === product.id
                                                             ? {
                                                                   ...p,
                                                                   quantity:
@@ -179,13 +294,13 @@ export default function List({ list }) {
                                                 );
 
                                                 handleChangeCount(
-                                                    producto.id,
+                                                    product.id,
                                                     e.target.value,
                                                 );
                                             }}
-                                            defaultValue={producto.quantity}
+                                            defaultValue={product.quantity}
                                             disabled={
-                                                producto.status != 'pending'
+                                                product.status != 'pending'
                                             }
                                         />
                                     </div>
@@ -193,7 +308,7 @@ export default function List({ list }) {
                                     <div className="text-right">
                                         <span
                                             className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
-                                                producto.status != 'pending'
+                                                product.status != 'pending'
                                                     ? 'text-gray-500'
                                                     : 'text-gray-900'
                                             }`}
@@ -205,12 +320,12 @@ export default function List({ list }) {
                                             min="0"
                                             step="0.01"
                                             className={`w-24 cursor-pointer border-none bg-transparent py-0 font-semibold ${
-                                                producto.status != 'pending'
+                                                product.status != 'pending'
                                                     ? 'text-gray-500'
                                                     : 'text-gray-900'
                                             }`}
                                             disabled={
-                                                producto.status != 'pending'
+                                                product.status != 'pending'
                                             }
                                             onChange={(e) => {
                                                 const newPrice = parseFloat(
@@ -219,7 +334,7 @@ export default function List({ list }) {
 
                                                 setProducts(
                                                     products.map((p) =>
-                                                        p.id === producto.id
+                                                        p.id === product.id
                                                             ? {
                                                                   ...p,
                                                                   unit_price:
@@ -230,18 +345,18 @@ export default function List({ list }) {
                                                 );
 
                                                 handleChangePrice(
-                                                    producto.id,
+                                                    product.id,
                                                     newPrice,
                                                 );
                                             }}
                                             defaultValue={
-                                                typeof producto.unit_price ===
+                                                typeof product.unit_price ===
                                                 'number'
-                                                    ? producto.unit_price.toFixed(
+                                                    ? product.unit_price.toFixed(
                                                           2,
                                                       )
                                                     : parseFloat(
-                                                          producto.unit_price ||
+                                                          product.unit_price ||
                                                               0,
                                                       ).toFixed(2)
                                             }
@@ -264,10 +379,38 @@ export default function List({ list }) {
                         </div>
                     </div>
                 )}
+
+                {/* Menú contextual */}
+                {contextMenu.isOpen && (
+                    <div
+                        ref={contextMenuRef}
+                        className="fixed z-50 min-w-[120px] rounded-lg border border-gray-200 bg-white py-2 shadow-lg"
+                        style={{
+                            left: contextMenu.x,
+                            top: contextMenu.y,
+                        }}
+                    >
+                        <button
+                            onClick={() => handleEdit(contextMenu.productId)}
+                            className="flex w-full items-center space-x-2 px-4 py-2 text-left text-sm text-gray-700 transition-colors duration-150 hover:bg-gray-50"
+                        >
+                            <Edit2 size={16} />
+                            <span>Editar</span>
+                        </button>
+                        <button
+                            onClick={() => handleDelete(contextMenu.productId)}
+                            className="flex w-full items-center space-x-2 px-4 py-2 text-left text-sm text-red-600 transition-colors duration-150 hover:bg-red-50"
+                        >
+                            <Trash2 size={16} />
+                            <span>Eliminar</span>
+                        </button>
+                    </div>
+                )}
             </div>
 
             <AddingProductModal
                 id={list.id}
+                editProduct={editProduct}
                 isOpen={showAgregarModal}
                 onClose={() => setShowAgregarModal(false)}
             />

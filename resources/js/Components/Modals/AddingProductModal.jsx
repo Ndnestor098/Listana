@@ -1,7 +1,13 @@
 import { useForm } from '@inertiajs/react';
 import { X } from 'lucide-react';
+import { useEffect } from 'react';
 
-export default function AgregarProductoModal({ isOpen, onClose, id }) {
+export default function AgregarProductoModal({
+    isOpen,
+    onClose,
+    id,
+    editProduct = false,
+}) {
     const { data, setData, errors } = useForm({
         name: '',
         category: '',
@@ -10,15 +16,34 @@ export default function AgregarProductoModal({ isOpen, onClose, id }) {
         list_id: id,
     });
 
+    useEffect(() => {
+        if (editProduct) {
+            setData({
+                name: editProduct.name,
+                category: editProduct.category,
+                quantity: editProduct.quantity,
+                notes: editProduct.notes,
+                list_id: id,
+            });
+        }
+    }, [editProduct, setData, id]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            await axios.post(route('products.store'), data);
+            if (editProduct) {
+                await axios.post(
+                    route('products.update', {
+                        product: editProduct.id,
+                    }),
+                    data,
+                );
+            } else {
+                await axios.post(route('products.store'), data);
+            }
 
             window.location.reload(); // Recargar la página para ver el nuevo producto
-
-            // Si quieres redirigir con Inertia
         } catch (error) {
             console.error('Error al agregar el producto:', error);
         }
@@ -41,7 +66,7 @@ export default function AgregarProductoModal({ isOpen, onClose, id }) {
             <div className="w-full max-w-md rounded-xl bg-white shadow-xl">
                 <div className="flex items-center justify-between border-b border-gray-100 p-6">
                     <h2 className="text-xl font-semibold text-gray-900">
-                        Agregar Producto
+                        {editProduct ? 'Editar Producto' : 'Agregar Producto'}
                     </h2>
                     <button
                         onClick={onClose}
@@ -154,7 +179,7 @@ export default function AgregarProductoModal({ isOpen, onClose, id }) {
                             type="submit"
                             className="flex-1 rounded-lg bg-emerald-500 px-4 py-2 text-white transition-colors hover:bg-emerald-600"
                         >
-                            Agregar
+                            {editProduct ? 'Editar' : 'Agregar'}
                         </button>
                     </div>
                 </form>

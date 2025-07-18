@@ -9,21 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -58,9 +43,39 @@ class ProductController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Store a newly created resource in storage.
      */
     public function update(Request $request, Product $product)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'category' => 'nullable|string|max:255',
+            'quantity' => 'required|integer|min:1',
+            'notes' => 'nullable|string|max:500',
+            'list_id' => 'required|exists:shopping_lists,id',
+        ]);
+
+        $product->update([
+            'name' => $request->name,
+            'category' => $request->category,
+            'quantity' => $request->quantity,
+            'notes' => $request->notes,
+        ]);
+
+        $list = ShoppingList::find($request->list_id)->refresh();
+
+        $list->total_products = $list->products()->count();
+        $list->final_price = $list->products()->sum('unit_price');
+        $list->save();
+
+        return response()->noContent();
+    }
+
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function updateStatus(Request $request, Product $product)
     {
         $request->validate([
             'quantity' => 'nullable|integer|min:1',
@@ -98,6 +113,7 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return response()->noContent();
     }
 }
