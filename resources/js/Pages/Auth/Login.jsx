@@ -26,6 +26,9 @@ export default function Login() {
             onSuccess: () => {
                 setIsLoading(false);
             },
+            onError: () => {
+                setIsLoading(false);
+            },
         });
     };
 

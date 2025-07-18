@@ -254,14 +254,16 @@ export default function List({ list }) {
                 </div>
 
                 {/* Floating Action Button */}
-                <div className="fixed bottom-20 right-6 flex h-14 w-36 items-center justify-center rounded-lg bg-white shadow-lg transition-all duration-200 lg:bottom-6">
-                    <div className="text-center">
-                        <p className="text-2xl font-bold text-emerald-600">
-                            {Math.round((completed / total) * 100)}%
-                        </p>
-                        <p className="text-sm text-gray-700">Completado</p>
+                {window.innerWidth >= 1024 && (
+                    <div className="fixed bottom-20 right-6 flex h-14 w-36 items-center justify-center rounded-lg bg-white shadow-lg transition-all duration-200 lg:bottom-6">
+                        <div className="text-center">
+                            <p className="text-2xl font-bold text-emerald-600">
+                                {Math.round((completed / total) * 100)}%
+                            </p>
+                            <p className="text-sm text-gray-700">Completado</p>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
 
             <AddingProductModal
