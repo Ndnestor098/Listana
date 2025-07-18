@@ -18,6 +18,7 @@ export default function List({ list }) {
     });
     const [editProduct, setEditProduct] = useState();
     const contextMenuRef = useRef(null);
+    const timerRef = useRef(null);
 
     const toggleProducts = (id) => {
         const updated = products.map((p) => {
@@ -119,21 +120,29 @@ export default function List({ list }) {
         setShowAgregarModal(true);
     };
 
-    const handleRightClick = (e, productId) => {
-        e.preventDefault();
+    const handleRightClick = (eOrCoords, productId) => {
+        if (eOrCoords.preventDefault) {
+            eOrCoords.preventDefault();
+        }
+
         setContextMenu({
             isOpen: true,
-            x: e.clientX,
-            y: e.clientY,
+            x: eOrCoords.clientX,
+            y: eOrCoords.clientY,
             productId: productId,
         });
     };
 
     const handleTouchStart = (e, productId) => {
-        // Empieza el timer cuando toca la pantalla
+        // Clona los valores que necesitas antes de que el event se limpie
+        const touchEvent = {
+            clientX: e.touches[0].clientX,
+            clientY: e.touches[0].clientY,
+        };
+
         timerRef.current = setTimeout(() => {
-            handleRightClick(e, productId);
-        }, 600); // 600ms para considerar long press
+            handleRightClick(touchEvent, productId);
+        }, 600);
     };
 
     const handleTouchEnd = () => {
