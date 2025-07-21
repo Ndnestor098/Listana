@@ -37,7 +37,7 @@ export default function List({ list }) {
 
     const handleChangeCount = async (id, value, retries = 5) => {
         try {
-            await axios.post(route('products.update', id), {
+            await axios.post(route('products.partial-update', id), {
                 quantity: value,
             });
         } catch (error) {
@@ -57,7 +57,7 @@ export default function List({ list }) {
 
     const handleChangePrice = async (id, value, retries = 5) => {
         try {
-            await axios.post(route('products.update', id), {
+            await axios.post(route('products.partial-update', id), {
                 unit_price: value,
             });
         } catch (error) {
@@ -77,7 +77,7 @@ export default function List({ list }) {
 
     const handleChangeStatus = async (id, value, retries = 5) => {
         try {
-            await axios.post(route('products.update-status', id), {
+            await axios.post(route('products.partial-update', id), {
                 status: value,
             });
         } catch (error) {

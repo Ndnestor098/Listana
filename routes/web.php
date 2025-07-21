@@ -15,10 +15,16 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    $lists = ShoppingList::where('user_id', Auth::id())
+    $lists = ShoppingList::with(['products', 'sharedUsers', 'owner'])
+        ->where(function ($query) {
+            $query->where('user_id', Auth::id())
+                ->orWhereHas('sharedUsers', function ($q) {
+                    $q->where('user_id', Auth::id());
+                });
+        })
         ->orderBy('created_at', 'desc')
         ->limit(5)
-        ->get();
+        ->get(); 
     
     $lists_count = ShoppingList::where('user_id', Auth::id())
         ->orderBy('created_at', 'desc')

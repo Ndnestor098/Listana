@@ -70,12 +70,8 @@ class ProductController extends Controller
 
         return response()->noContent();
     }
-
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function updateStatus(Request $request, Product $product)
+    
+    public function partialUpdate(Request $request, Product $product)
     {
         $request->validate([
             'quantity' => 'nullable|integer|min:1',

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/store', [ProductController::class, 'store'])->name('store');
 
-Route::post('/update/status/{product}', [ProductController::class, 'updateStatus'])->name('update-status');
+Route::post('/update/partial-update/{product}', [ProductController::class, 'partialUpdate'])->name('partial-update');
 
 Route::post('/update/{product}', [ProductController::class, 'update'])->name('update');
 
