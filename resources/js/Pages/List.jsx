@@ -129,6 +129,12 @@ export default function List({ list }) {
 
         // Escuchar evento con namespace
         channel.listen('.ProductUpdated', (e) => {
+            if (e.product.deleted) {
+                setProducts((prevProducts) =>
+                    prevProducts.filter((p) => p.id !== e.product.id),
+                );
+                return;
+            }
             setProducts((prevProducts) => {
                 const updatedProduct = e.product;
                 const exists = prevProducts.some(
