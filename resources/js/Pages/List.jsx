@@ -162,6 +162,10 @@ export default function List({ list }) {
 
     const completed = products.filter((p) => p.status === 'bought').length;
     const total = products.length;
+    const totalPrices = products.reduce(
+        (sum, p) => sum + p.quantity * p.unit_price,
+        0,
+    );
 
     return (
         <AuthenticatedLayout>
@@ -201,6 +205,7 @@ export default function List({ list }) {
                     products={products}
                     completed={completed}
                     total={total}
+                    totalPrices={totalPrices}
                 />
 
                 {/* Search and Filters */}
@@ -280,7 +285,7 @@ export default function List({ list }) {
                                     <div className="flex items-center justify-center gap-4">
                                         <div className="relative flex items-center text-right">
                                             <span
-                                                className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
+                                                className={`w-11 border-none bg-transparent py-0 text-sm font-semibold lg:w-20 ${
                                                     product.status != 'pending'
                                                         ? 'text-gray-500'
                                                         : 'text-gray-900'
@@ -289,7 +294,7 @@ export default function List({ list }) {
                                                 Count:
                                             </span>
                                             <span
-                                                className={`ml-2 w-24 border-none bg-transparent py-0 text-start font-semibold ${
+                                                className={`ml-2 w-10 border-none bg-transparent py-0 text-start font-semibold lg:w-24 ${
                                                     product.status != 'pending'
                                                         ? 'text-gray-500'
                                                         : 'text-gray-900'
@@ -301,7 +306,7 @@ export default function List({ list }) {
 
                                         <div className="relative flex items-center text-right">
                                             <span
-                                                className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
+                                                className={`w-11 border-none bg-transparent py-0 text-sm font-semibold lg:w-20 ${
                                                     product.status != 'pending'
                                                         ? 'text-gray-500'
                                                         : 'text-gray-900'
@@ -310,7 +315,7 @@ export default function List({ list }) {
                                                 Price:
                                             </span>
                                             <span
-                                                className={`ml-2 w-24 border-none bg-transparent py-0 text-start font-semibold ${
+                                                className={`ml-2 w-10 border-none bg-transparent py-0 text-start font-semibold lg:w-24 ${
                                                     product.status != 'pending'
                                                         ? 'text-gray-500'
                                                         : 'text-gray-900'
@@ -327,16 +332,16 @@ export default function List({ list }) {
                 </div>
 
                 {/* Floating Action Button */}
-                {window.innerWidth >= 1024 && (
-                    <div className="fixed bottom-20 right-6 flex h-14 w-36 items-center justify-center rounded-lg bg-white shadow-lg transition-all duration-200 lg:bottom-6">
-                        <div className="text-center">
-                            <p className="text-2xl font-bold text-emerald-600">
-                                {Math.round((completed / total) * 100)}%
-                            </p>
-                            <p className="text-sm text-gray-700">Completado</p>
-                        </div>
+                <div className="fixed left-4 top-11 flex h-14 w-12 items-center justify-center rounded-lg bg-white shadow-lg transition-all duration-200 lg:bottom-5 lg:left-auto lg:right-6 lg:top-auto lg:h-14 lg:w-36">
+                    <div className="text-center">
+                        <p className="text-sm text-gray-700 lg:text-base">
+                            Precio
+                        </p>
+                        <p className="text-sm font-bold text-emerald-600 lg:text-2xl">
+                            ${totalPrices.toFixed(2)}
+                        </p>
                     </div>
-                )}
+                </div>
 
                 {/* Menú contextual */}
                 {contextMenu.isOpen && (

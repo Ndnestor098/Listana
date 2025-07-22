@@ -1,8 +1,9 @@
-export default function PurchaseProgressBar({ products, completed, total }) {
-    const totalPrices = products.reduce(
-        (sum, p) => sum + p.quantity * p.unit_price,
-        0,
-    );
+export default function PurchaseProgressBar({
+    products,
+    completed,
+    total,
+    totalPrices,
+}) {
     const completedPrices = products
         .filter((p) => p.status === 'bought')
         .reduce((sum, p) => sum + p.quantity * p.unit_price, 0);
