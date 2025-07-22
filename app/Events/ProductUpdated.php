@@ -3,10 +3,7 @@
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
-use Illuminate\Support\Facades\Log;
 
 class ProductUpdated implements ShouldBroadcastNow
 {
@@ -19,16 +16,11 @@ class ProductUpdated implements ShouldBroadcastNow
 
     public function broadcastOn()
     {
-        return new Channel('products'); // 🔴 Canal público llamado 'products'
+        return new Channel('products');
     }
 
-    public function broadcastWith()
+    public function broadcastAs()
     {
-        Log::info('Broadcasting ProductUpdated event:', $this->product->toArray());
-        return [
-            // tus datos que se envían al evento
-            'product' => $this->product,
-        ];
+        return 'ProductUpdated';
     }
-
 }

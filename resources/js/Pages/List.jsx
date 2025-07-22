@@ -5,7 +5,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import { Check, Edit2, Plus, Trash2 } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function List({ list }) {
     const [products, setProducts] = useState(list.products);
@@ -154,6 +154,45 @@ export default function List({ list }) {
         // Cancela si se mueve el dedo (no es long press)
         clearTimeout(timerRef.current);
     };
+
+    useEffect(() => {
+        if (!window.Echo) {
+            console.warn('Echo no está inicializado');
+            return;
+        }
+
+        const channel = window.Echo.channel('products');
+
+        channel.error((error) => {
+            console.error('Error de canal:', error);
+        });
+
+        // Escuchar evento con namespace
+        channel.listen('.ProductUpdated', (e) => {
+            setProducts((prevProducts) => {
+                const updatedProduct = e.product;
+                const exists = prevProducts.some(
+                    (p) => p.id === updatedProduct.id,
+                );
+
+                if (exists) {
+                    // Reemplaza el producto existente
+                    return prevProducts.map((product) =>
+                        product.id === updatedProduct.id
+                            ? updatedProduct
+                            : product,
+                    );
+                } else {
+                    // Agrega el nuevo producto al inicio de la lista (o al final, según tu lógica)
+                    return [updatedProduct, ...prevProducts];
+                }
+            });
+        });
+
+        return () => {
+            window.Echo.leaveChannel('products');
+        };
+    }, []);
 
     const completed = products.filter((p) => p.status === 'bought').length;
     const total = products.length;
@@ -307,7 +346,7 @@ export default function List({ list }) {
                                                     e.target.value,
                                                 );
                                             }}
-                                            defaultValue={product.quantity}
+                                            value={Number(product.quantity)}
                                             disabled={
                                                 product.status != 'pending'
                                             }
@@ -358,7 +397,7 @@ export default function List({ list }) {
                                                     newPrice,
                                                 );
                                             }}
-                                            defaultValue={
+                                            value={
                                                 typeof product.unit_price ===
                                                 'number'
                                                     ? product.unit_price.toFixed(

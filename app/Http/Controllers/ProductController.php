@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ProductUpdated;
 use App\Models\Product;
 use App\Models\ShoppingList;
 use Illuminate\Http\Request;
@@ -100,6 +101,8 @@ class ProductController extends Controller
                 'completed_products' => $product->shoppingList->products()->where('status', 'bought')->count(),
             ]);
         }
+
+        event(new ProductUpdated($product));
 
         return response()->noContent();
     }
