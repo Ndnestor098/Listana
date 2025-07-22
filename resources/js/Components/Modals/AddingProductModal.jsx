@@ -8,10 +8,11 @@ export default function AgregarProductoModal({
     id,
     editProduct = false,
 }) {
-    const { data, setData, errors } = useForm({
+    const { data, setData, errors, reset } = useForm({
         name: '',
         category: '',
         quantity: 1,
+        price: 0,
         notes: '',
         list_id: id,
     });
@@ -23,10 +24,13 @@ export default function AgregarProductoModal({
                 category: editProduct.category,
                 quantity: editProduct.quantity,
                 notes: editProduct.notes,
+                price: editProduct.unit_price,
                 list_id: id,
             });
+        } else {
+            reset();
         }
-    }, [editProduct, setData, id]);
+    }, [editProduct, setData, id, reset]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,7 +47,9 @@ export default function AgregarProductoModal({
                 await axios.post(route('products.store'), data);
             }
 
-            window.location.reload(); // Recargar la página para ver el nuevo producto
+            reset();
+            onClose();
+            //window.location.reload(); // Recargar la página para ver el nuevo producto
         } catch (error) {
             console.error('Error al agregar el producto:', error);
         }
@@ -60,6 +66,8 @@ export default function AgregarProductoModal({
     }
 
     if (!isOpen) return null;
+
+    console.log(data);
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
@@ -84,7 +92,7 @@ export default function AgregarProductoModal({
                         <input
                             type="text"
                             name="name"
-                            value={data.name}
+                            defaultValue={data.name}
                             onChange={handleChange}
                             className="w-full rounded-lg border border-gray-300 p-3 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
                             placeholder="Ej: Leche entera 1L"
@@ -143,7 +151,28 @@ export default function AgregarProductoModal({
                         />
                         {errors.quantity && (
                             <span className="block text-center text-xs text-red-500">
-                                {errors.category}
+                                {errors.quantity}
+                            </span>
+                        )}
+                    </div>
+
+                    <div>
+                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                            Precio
+                        </label>
+                        <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            name="price"
+                            value={data.price}
+                            onChange={handleChange}
+                            className="w-full rounded-lg border border-gray-300 p-3 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500"
+                            required
+                        />
+                        {errors.price && (
+                            <span className="block text-center text-xs text-red-500">
+                                {errors.price}
                             </span>
                         )}
                     </div>

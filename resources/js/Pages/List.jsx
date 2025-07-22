@@ -35,46 +35,6 @@ export default function List({ list }) {
         setProducts(updated);
     };
 
-    const handleChangeCount = async (id, value, retries = 5) => {
-        try {
-            await axios.post(route('products.partial-update', id), {
-                quantity: value,
-            });
-        } catch (error) {
-            if (error.code === 'ERR_NETWORK' && retries > 0) {
-                console.warn(
-                    `Network error, reintentando... (${4 - retries}/3)`,
-                );
-
-                setTimeout(() => {
-                    handleChangePrice(id, value, retries - 1);
-                }, 5000);
-            } else {
-                console.error('Error al cambiar las Cantidades:', error);
-            }
-        }
-    };
-
-    const handleChangePrice = async (id, value, retries = 5) => {
-        try {
-            await axios.post(route('products.partial-update', id), {
-                unit_price: value,
-            });
-        } catch (error) {
-            if (error.code === 'ERR_NETWORK' && retries > 0) {
-                console.warn(
-                    `Network error, reintentando... (${4 - retries}/3)`,
-                );
-
-                setTimeout(() => {
-                    handleChangePrice(id, value, retries - 1);
-                }, 5000);
-            } else {
-                console.error('Error al cambiar el precio:', error);
-            }
-        }
-    };
-
     const handleChangeStatus = async (id, value, retries = 5) => {
         try {
             await axios.post(route('products.partial-update', id), {
@@ -205,9 +165,9 @@ export default function List({ list }) {
             />
 
             <div
-                onClick={() =>
-                    setContextMenu({ ...contextMenu, isOpen: false })
-                }
+                onClick={() => {
+                    setContextMenu({ ...contextMenu, isOpen: false });
+                }}
                 className="space-y-6"
             >
                 {/* Header */}
@@ -248,171 +208,115 @@ export default function List({ list }) {
                         </h2>
                     </div>
                     <div className="divide-y divide-gray-100">
-                        {products.map((product) => (
-                            <div
-                                key={product.id}
-                                className={`flex flex-col gap-4 p-4 transition-colors hover:bg-gray-50 sm:flex-row sm:items-center sm:justify-between ${
-                                    product.status != 'pending'
-                                        ? 'bg-emerald-50'
-                                        : ''
-                                }`}
-                                onContextMenu={(e) =>
-                                    handleRightClick(e, product.id)
-                                }
-                                onTouchStart={(e) =>
-                                    handleTouchStart(e, product.id)
-                                }
-                                onTouchEnd={handleTouchEnd}
-                                onTouchMove={handleTouchMove}
-                            >
-                                <div className="flex items-center gap-4">
-                                    <button
-                                        onClick={() =>
-                                            toggleProducts(product.id)
-                                        }
-                                        className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 ${
-                                            product.status != 'pending'
-                                                ? 'border-emerald-500 bg-emerald-500 text-white'
-                                                : 'border-gray-300 hover:border-emerald-400'
-                                        }`}
-                                    >
-                                        {product.status != 'pending' && (
-                                            <Check className="h-4 w-4" />
-                                        )}
-                                    </button>
+                        {products.map((product) => {
+                            const formattedPrice =
+                                typeof product.unit_price === 'number'
+                                    ? product.unit_price.toFixed(2)
+                                    : parseFloat(
+                                          product.unit_price || 0,
+                                      ).toFixed(2);
 
-                                    <div
-                                        className="flex-1 cursor-pointer"
-                                        onClick={() =>
-                                            toggleProducts(product.id)
-                                        }
-                                    >
-                                        <h3
-                                            className={`font-medium ${
+                            return (
+                                <div
+                                    key={product.id}
+                                    className={`flex flex-col gap-4 p-4 transition-colors hover:bg-gray-50 sm:flex-row sm:items-center sm:justify-between ${
+                                        product.status != 'pending'
+                                            ? 'bg-emerald-50'
+                                            : ''
+                                    }`}
+                                    onContextMenu={(e) =>
+                                        handleRightClick(e, product.id)
+                                    }
+                                    onTouchStart={(e) =>
+                                        handleTouchStart(e, product.id)
+                                    }
+                                    onTouchEnd={handleTouchEnd}
+                                    onTouchMove={handleTouchMove}
+                                >
+                                    <div className="flex items-center gap-4">
+                                        <button
+                                            onClick={() =>
+                                                toggleProducts(product.id)
+                                            }
+                                            className={`flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full border-2 transition-all duration-200 ${
                                                 product.status != 'pending'
-                                                    ? 'text-gray-500 line-through'
-                                                    : 'text-gray-900'
+                                                    ? 'border-emerald-500 bg-emerald-500 text-white'
+                                                    : 'border-gray-300 hover:border-emerald-400'
                                             }`}
                                         >
-                                            {product.name}
-                                        </h3>
-                                        <p className="text-sm text-gray-500">
-                                            {product.category ||
-                                                'Sin Categoria'}
-                                        </p>
+                                            {product.status != 'pending' && (
+                                                <Check className="h-4 w-4" />
+                                            )}
+                                        </button>
+
+                                        <div
+                                            className="flex-1 cursor-pointer"
+                                            onClick={() =>
+                                                toggleProducts(product.id)
+                                            }
+                                        >
+                                            <h3
+                                                className={`font-medium ${
+                                                    product.status != 'pending'
+                                                        ? 'text-gray-500 line-through'
+                                                        : 'text-gray-900'
+                                                }`}
+                                            >
+                                                {product.name}
+                                            </h3>
+                                            <p className="text-sm text-gray-500">
+                                                {product.category ||
+                                                    'Sin Categoria'}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-center gap-4">
+                                        <div className="relative flex items-center text-right">
+                                            <span
+                                                className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
+                                                    product.status != 'pending'
+                                                        ? 'text-gray-500'
+                                                        : 'text-gray-900'
+                                                }`}
+                                            >
+                                                Count:
+                                            </span>
+                                            <span
+                                                className={`ml-2 w-24 border-none bg-transparent py-0 text-start font-semibold ${
+                                                    product.status != 'pending'
+                                                        ? 'text-gray-500'
+                                                        : 'text-gray-900'
+                                                }`}
+                                            >
+                                                {product.quantity}
+                                            </span>
+                                        </div>
+
+                                        <div className="relative flex items-center text-right">
+                                            <span
+                                                className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
+                                                    product.status != 'pending'
+                                                        ? 'text-gray-500'
+                                                        : 'text-gray-900'
+                                                }`}
+                                            >
+                                                Price:
+                                            </span>
+                                            <span
+                                                className={`ml-2 w-24 border-none bg-transparent py-0 text-start font-semibold ${
+                                                    product.status != 'pending'
+                                                        ? 'text-gray-500'
+                                                        : 'text-gray-900'
+                                                }`}
+                                            >
+                                                {formattedPrice}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div className="flex items-center justify-center gap-4">
-                                    <div className="text-right">
-                                        <span
-                                            className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
-                                                product.status != 'pending'
-                                                    ? 'text-gray-500'
-                                                    : 'text-gray-900'
-                                            }`}
-                                        >
-                                            Count:
-                                        </span>
-                                        <input
-                                            type="number"
-                                            min="1"
-                                            className={`w-20 cursor-pointer border-none bg-transparent py-0 font-semibold ${
-                                                product.status != 'pending'
-                                                    ? 'text-gray-500'
-                                                    : 'text-gray-900'
-                                            }`}
-                                            onChange={(e) => {
-                                                if (e.target.value < 1) {
-                                                    e.target.value = 1;
-                                                    return;
-                                                }
-
-                                                setProducts(
-                                                    products.map((p) =>
-                                                        p.id === product.id
-                                                            ? {
-                                                                  ...p,
-                                                                  quantity:
-                                                                      e.target
-                                                                          .value,
-                                                              }
-                                                            : p,
-                                                    ),
-                                                );
-
-                                                handleChangeCount(
-                                                    product.id,
-                                                    e.target.value,
-                                                );
-                                            }}
-                                            value={Number(product.quantity)}
-                                            disabled={
-                                                product.status != 'pending'
-                                            }
-                                        />
-                                    </div>
-
-                                    <div className="text-right">
-                                        <span
-                                            className={`w-20 border-none bg-transparent py-0 text-sm font-semibold ${
-                                                product.status != 'pending'
-                                                    ? 'text-gray-500'
-                                                    : 'text-gray-900'
-                                            }`}
-                                        >
-                                            Price:
-                                        </span>
-                                        <input
-                                            type="number"
-                                            min="0"
-                                            step="0.01"
-                                            className={`w-24 cursor-pointer border-none bg-transparent py-0 font-semibold ${
-                                                product.status != 'pending'
-                                                    ? 'text-gray-500'
-                                                    : 'text-gray-900'
-                                            }`}
-                                            disabled={
-                                                product.status != 'pending'
-                                            }
-                                            onChange={(e) => {
-                                                const newPrice = parseFloat(
-                                                    e.target.value,
-                                                );
-
-                                                setProducts(
-                                                    products.map((p) =>
-                                                        p.id === product.id
-                                                            ? {
-                                                                  ...p,
-                                                                  unit_price:
-                                                                      newPrice,
-                                                              }
-                                                            : p,
-                                                    ),
-                                                );
-
-                                                handleChangePrice(
-                                                    product.id,
-                                                    newPrice,
-                                                );
-                                            }}
-                                            value={
-                                                typeof product.unit_price ===
-                                                'number'
-                                                    ? product.unit_price.toFixed(
-                                                          2,
-                                                      )
-                                                    : parseFloat(
-                                                          product.unit_price ||
-                                                              0,
-                                                      ).toFixed(2)
-                                            }
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
 
@@ -460,7 +364,10 @@ export default function List({ list }) {
                 id={list.id}
                 editProduct={editProduct}
                 isOpen={showAgregarModal}
-                onClose={() => setShowAgregarModal(false)}
+                onClose={() => {
+                    setShowAgregarModal(false);
+                    setEditProduct(null);
+                }}
             />
         </AuthenticatedLayout>
     );

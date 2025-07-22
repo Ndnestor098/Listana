@@ -34,7 +34,11 @@ class ShoppingListController extends Controller
      */
     public function show($uuid)
     {
-        $list = ShoppingList::with('products')
+        $list = ShoppingList::with([
+            'products' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            }
+            ])
             ->where('uuid', $uuid)
             ->firstOrFail();
 
