@@ -1,3 +1,4 @@
+import FloatingPrice from '@/Components/FloatingPrice';
 import AddingProductModal from '@/Components/Modals/AddingProductModal';
 import FilterTextModal from '@/Components/Modals/FilterTextModal';
 import PurchaseProgressBar from '@/Components/Modals/PurchaseProgressBar';
@@ -332,16 +333,7 @@ export default function List({ list }) {
                 </div>
 
                 {/* Floating Action Button */}
-                <div className="fixed left-4 top-11 flex h-14 w-12 items-center justify-center rounded-lg bg-white shadow-lg transition-all duration-200 lg:bottom-5 lg:left-auto lg:right-6 lg:top-auto lg:h-14 lg:w-36">
-                    <div className="text-center">
-                        <p className="text-sm text-gray-700 lg:text-base">
-                            Precio
-                        </p>
-                        <p className="text-sm font-bold text-emerald-600 lg:text-2xl">
-                            ${totalPrices.toFixed(2)}
-                        </p>
-                    </div>
-                </div>
+                <FloatingPrice totalPrices={totalPrices} />
 
                 {/* Menú contextual */}
                 {contextMenu.isOpen && (

@@ -1,16 +1,16 @@
 import { Search } from 'lucide-react';
 
-export default function FilterTextModal({ setProductos, list }) {
+export default function FilterTextModal({ setProducts, list }) {
     const handleFilter = (e) => {
         let value = e.target.value.toLowerCase();
         if (value.length > 2) {
-            setProductos(
+            setProducts(
                 list.products.filter((p) =>
                     p.name.toLowerCase().includes(value),
                 ),
             );
         } else {
-            setProductos(list.products);
+            setProducts(list.products);
         }
     };
 
